@@ -1,6 +1,6 @@
-package org.jetbrains.plugins.template.services
+package com.github.markopi.ideafirstplugin.services
 
-import org.jetbrains.plugins.template.MyBundle
+import com.github.markopi.ideafirstplugin.MyBundle
 
 class MyApplicationService {
 
