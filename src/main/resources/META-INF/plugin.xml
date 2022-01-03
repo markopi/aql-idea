@@ -11,8 +11,21 @@
         <projectService serviceImplementation="com.github.markopi.ideafirstplugin.services.MyProjectService"/>
     </extensions>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="AQL"
+                  implementationClass="com.github.markopi.ideafirstplugin.aql.AqlFileType"
+                  fieldName="INSTANCE"
+                  language="AQL"
+                  extensions="aql"/>
+        <lang.parserDefinition language="AQL" implementationClass="com.github.markopi.ideafirstplugin.aql.AqlTextParserDefinition"/>
+        <annotator language="AQL" implementationClass="com.github.markopi.ideafirstplugin.aql.AqlAnnotator"/>
+        <completion.contributor language="AQL"
+                                implementationClass="com.github.markopi.ideafirstplugin.aql.AqlCompletionContributor"/>
+    </extensions>
+
     <applicationListeners>
         <listener class="com.github.markopi.ideafirstplugin.listeners.MyProjectManagerListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </applicationListeners>
+
 </idea-plugin>
