@@ -1,7 +1,6 @@
-package com.github.markopi.ideafirstplugin.icons
+package com.github.markopi.ideafirstplugin.plugin.icons
 
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.util.IconLoader
 
 object AqlPluginIcons {
 

@@ -1,4 +1,4 @@
-package com.github.markopi.ideafirstplugin.aql
+package com.github.markopi.ideafirstplugin.plugin.editor
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder

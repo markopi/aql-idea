@@ -1,4 +1,4 @@
-package com.github.markopi.ideafirstplugin.aql
+package com.github.markopi.ideafirstplugin.plugin.editor
 
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.*

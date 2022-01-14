@@ -7,24 +7,35 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.markopi.ideafirstplugin.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.markopi.ideafirstplugin.services.MyProjectService"/>
+        <applicationService serviceImplementation="com.github.markopi.ideafirstplugin.plugin.services.MyApplicationService"/>
+        <projectService serviceImplementation="com.github.markopi.ideafirstplugin.plugin.services.MyProjectService"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="AQL"
-                  implementationClass="com.github.markopi.ideafirstplugin.aql.AqlFileType"
+                  implementationClass="com.github.markopi.ideafirstplugin.plugin.editor.AqlFileType"
                   fieldName="INSTANCE"
                   language="AQL"
                   extensions="aql"/>
-        <lang.parserDefinition language="AQL" implementationClass="com.github.markopi.ideafirstplugin.aql.AqlTextParserDefinition"/>
-        <annotator language="AQL" implementationClass="com.github.markopi.ideafirstplugin.aql.AqlAnnotator"/>
+        <lang.parserDefinition language="AQL" implementationClass="com.github.markopi.ideafirstplugin.plugin.editor.AqlTextParserDefinition"/>
+        <annotator language="AQL" implementationClass="com.github.markopi.ideafirstplugin.plugin.editor.AqlAnnotator"/>
         <completion.contributor language="AQL"
-                                implementationClass="com.github.markopi.ideafirstplugin.aql.AqlCompletionContributor"/>
+                                implementationClass="com.github.markopi.ideafirstplugin.plugin.editor.AqlCompletionContributor"/>
+
+        <configurationType implementation="com.github.markopi.ideafirstplugin.plugin.runner.AqlRunConfigurationType"/>
+        <programRunner implementation="com.github.markopi.ideafirstplugin.plugin.runner.AqlQueryRunner"/>
+        <runConfigurationProducer implementation="com.github.markopi.ideafirstplugin.plugin.runner.AqlRunConfigurationProducer"/>
+        <runLineMarkerContributor language="AQL" implementationClass="com.github.markopi.ideafirstplugin.plugin.runner.AqlRunLineMarkerProvider"/>
+
+        <notificationGroup id="AQL" displayType="BALLOON" key="notification.group.name"/>
+
+        <toolWindow id="AQL" secondary="true" icon="AllIcons.General.Modified" anchor="bottom"
+                    factoryClass="com.github.markopi.ideafirstplugin.plugin.toolWindow"/>
+
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.markopi.ideafirstplugin.listeners.MyProjectManagerListener"
+        <listener class="com.github.markopi.ideafirstplugin.plugin.listeners.MyProjectManagerListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </applicationListeners>
 

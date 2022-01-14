@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun properties(key: String) = project.findProperty(key).toString()
 
+
+
 plugins {
     // Java support
     id("java")
@@ -22,6 +24,18 @@ version = properties("pluginVersion")
 // Configure project's dependencies
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://artifactory.better.care/artifactory/thinkehr-remote")
+        credentials {
+            username = "markopi"
+            password = "kresnicka"
+        }
+    }
+}
+
+dependencies {
+//    implementation("com.marand.thinkehr:thinkehr-framework:3.1.0-A30")
+    implementation(group = "com.marand.thinkehr", name = "thinkehr-framework-aql-grammar", version = "3.1.0-A30")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin

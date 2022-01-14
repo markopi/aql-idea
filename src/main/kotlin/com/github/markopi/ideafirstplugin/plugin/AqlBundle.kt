@@ -1,13 +1,13 @@
-package com.github.markopi.ideafirstplugin
+package com.github.markopi.ideafirstplugin.plugin
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
 
 @NonNls
-private const val BUNDLE = "messages.MyBundle"
+private const val BUNDLE = "messages.AqlBundle"
 
-object MyBundle : DynamicBundle(BUNDLE) {
+object AqlBundle : DynamicBundle(BUNDLE) {
 
     @Suppress("SpreadOperator")
     @JvmStatic
