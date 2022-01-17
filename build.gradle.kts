@@ -46,6 +46,12 @@ intellij {
 
     // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
     plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
+
+    java {
+        sourceCompatibility=JavaVersion.VERSION_15
+        targetCompatibility=JavaVersion.VERSION_15
+
+    }
 }
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin

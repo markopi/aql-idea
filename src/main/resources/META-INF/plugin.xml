@@ -30,7 +30,7 @@
         <notificationGroup id="AQL" displayType="BALLOON" key="notification.group.name"/>
 
         <toolWindow id="AQL" secondary="true" icon="AllIcons.General.Modified" anchor="bottom"
-                    factoryClass="com.github.markopi.ideafirstplugin.plugin.toolWindow"/>
+                    factoryClass="com.github.markopi.ideafirstplugin.plugin.toolWindow.AqlToolWindowFactory"/>
 
     </extensions>
 

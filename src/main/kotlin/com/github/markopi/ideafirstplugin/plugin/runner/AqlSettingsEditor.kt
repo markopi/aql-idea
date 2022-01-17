@@ -23,6 +23,7 @@ class AqlSettingsEditor : SettingsEditor<AqlRunConfiguration>() {
             row("Script file:") {
                 scriptFileField = textField().component
             }
+
         }
         return panel
     }

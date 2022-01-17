@@ -2,8 +2,8 @@ package com.github.markopi.ideafirstplugin.plugin.runner
 
 import com.github.markopi.ideafirstplugin.plugin.AqlPluginException
 import com.github.markopi.ideafirstplugin.plugin.editor.AqlTextTokenTypes
+import com.github.markopi.ideafirstplugin.plugin.toolWindow.AqlToolWindowFactory
 import com.github.markopi.ideafirstplugin.thinkehr.ThinkEhrClient
-import com.github.markopi.ideafirstplugin.thinkehr.ThinkEhrQueryResponse
 import com.github.markopi.ideafirstplugin.thinkehr.ThinkEhrTarget
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
@@ -13,7 +13,7 @@ import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 
@@ -35,7 +35,12 @@ class AqlRunLineMarkerProvider : RunLineMarkerContributor() {
             val target = ThinkEhrTarget.DEFAULT
 
             try {
-                ThinkEhrClient.query(target, aql)
+                val r = ThinkEhrClient.query(target, aql)
+                val toolWindow = ToolWindowManager.getInstance(event.project!!).getToolWindow("AQL")!!
+                toolWindow.activate {
+                    AqlToolWindowFactory.updateTableValues(r)
+                }
+
             } catch (e: Exception) {
                 if (e !is AqlPluginException) {
                     log.error("Error calling ThinkEhr Server", e)
