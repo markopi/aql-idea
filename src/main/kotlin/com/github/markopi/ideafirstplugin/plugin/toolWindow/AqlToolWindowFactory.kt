@@ -13,7 +13,7 @@ class AqlToolWindowFactory: ToolWindowFactory {
         val aqlToolWindow = AqlToolWindow()
         table = aqlToolWindow.table1
         val contentFactory = ContentFactory.SERVICE.getInstance()
-        val content = contentFactory.createContent(aqlToolWindow.content, "", false)
+        val content = contentFactory.createContent(aqlToolWindow.content, "Query Results", false)
         toolWindow.contentManager.addContent(content)
         toolWindow.activate {
 

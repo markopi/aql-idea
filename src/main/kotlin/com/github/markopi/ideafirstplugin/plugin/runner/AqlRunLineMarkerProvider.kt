@@ -47,6 +47,7 @@ class AqlRunLineMarkerProvider : RunLineMarkerContributor() {
                 }
                 val n = Notification(
                     "AQL",
+                    "ThinkEhr server error",
                     if (e is AqlPluginException) e.message ?: e.toString() else e.toString(),
                     NotificationType.ERROR
                 )
@@ -54,9 +55,6 @@ class AqlRunLineMarkerProvider : RunLineMarkerContributor() {
                 return
             }
 
-
-
-            println("Executed")
         }
 
 

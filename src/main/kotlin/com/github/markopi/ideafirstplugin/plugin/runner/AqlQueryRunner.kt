@@ -13,8 +13,8 @@ class AqlQueryRunner : ProgramRunner<RunnerSettings> {
     }
 
     override fun execute(environment: ExecutionEnvironment) {
-        println("This is weird")
-        println("Why doesn't it stop here?")
+//        println("This is weird")
+//        println("Why doesn't it stop here?")
 
     }
 
