@@ -2,6 +2,7 @@ package com.github.markopi.ideafirstplugin.plugin.runner
 
 import com.github.markopi.ideafirstplugin.plugin.AqlPluginException
 import com.github.markopi.ideafirstplugin.plugin.editor.AqlTextTokenTypes
+import com.github.markopi.ideafirstplugin.plugin.settings.AqlSettingsState
 import com.github.markopi.ideafirstplugin.plugin.toolWindow.AqlToolWindowFactory
 import com.github.markopi.ideafirstplugin.thinkehr.ThinkEhrClient
 import com.github.markopi.ideafirstplugin.thinkehr.ThinkEhrTarget
@@ -29,10 +30,26 @@ class AqlRunLineMarkerProvider : RunLineMarkerContributor() {
 
     class RunAqlAction(val aql: String) : AnAction({ "Run aql query" }, AllIcons.RunConfigurations.TestState.Run) {
 
+        private fun getThinkEhrTarget(): ThinkEhrTarget? {
+            val settings = AqlSettingsState.INSTANCE
+            if (settings.serverUrl.isBlank()) return null
+            return ThinkEhrTarget(url = settings.serverUrl, username = settings.loginUsername, password = settings.loginPassword)
+        }
+
         override fun actionPerformed(event: AnActionEvent) {
 //            val n = Notification("AQL", "Started aql", NotificationType.INFORMATION)
 //            Notifications.Bus.notify(n, event.project)
-            val target = ThinkEhrTarget.DEFAULT
+            val target = getThinkEhrTarget()
+            if (target == null) {
+                val n = Notification(
+                    "AQL",
+                    "AQL server not configured",
+                    "Please configure aql server in project settings",
+                    NotificationType.ERROR
+                )
+                Notifications.Bus.notify(n, event.project)
+                return
+            }
 
             try {
                 val r = ThinkEhrClient.query(target, aql)

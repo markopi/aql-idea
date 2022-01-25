@@ -35,6 +35,10 @@
         <toolWindow id="AQL" secondary="true" icon="AllIcons.General.Modified" anchor="bottom"
                     factoryClass="com.github.markopi.ideafirstplugin.plugin.toolWindow.AqlToolWindowFactory"/>
 
+        <applicationConfigurable parentId="tools" instance="com.github.markopi.ideafirstplugin.plugin.settings.AqlSettingsConfigurable"
+                                 id="com.github.markopi.ideafirstplugin.plugin.settings.AqlSettingsConfigurable"
+                                 displayName="AQL Settings"/>
+        <applicationService serviceImplementation="com.github.markopi.ideafirstplugin.plugin.settings.AqlSettingsState"/>
     </extensions>
 
     <applicationListeners>
