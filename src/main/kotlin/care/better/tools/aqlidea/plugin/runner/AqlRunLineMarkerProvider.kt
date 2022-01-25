@@ -28,7 +28,7 @@ class AqlRunLineMarkerProvider : RunLineMarkerContributor() {
         }
     }
 
-    class RunAqlAction(val aql: String) : AnAction({ "Run aql query" }, AllIcons.RunConfigurations.TestState.Run) {
+    class RunAqlAction(val aql: String) : AnAction("Run AQL Query", "Run AQL query on configured server", AllIcons.RunConfigurations.TestState.Run) {
 
         private fun getThinkEhrTarget(): ThinkEhrTarget? {
             val settings = AqlSettingsState.INSTANCE

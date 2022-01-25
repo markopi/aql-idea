@@ -1,0 +1,11 @@
+-- weird aql
+select
+    e/ehr_id/value as ehr_id,
+    c/uid/value as uuid,
+    c/context/start_time/value as start_time,
+    c/name/value as template_id
+from ehr e
+contains composition c
+where template_id!='PPoP National Patient Summary'
+order by start_time desc
+limit 10
