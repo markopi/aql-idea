@@ -21,6 +21,9 @@
         <annotator language="AQL" implementationClass="com.github.markopi.ideafirstplugin.plugin.editor.AqlAnnotator"/>
         <completion.contributor language="AQL"
                                 implementationClass="com.github.markopi.ideafirstplugin.plugin.editor.AqlCompletionContributor"/>
+        <syntaxHighlighter key="AQL"
+                           implementationClass="com.github.markopi.ideafirstplugin.plugin.editor.AqlSyntaxHighlighter"/>
+
 
         <configurationType implementation="com.github.markopi.ideafirstplugin.plugin.runner.AqlRunConfigurationType"/>
         <programRunner implementation="com.github.markopi.ideafirstplugin.plugin.runner.AqlQueryRunner"/>
