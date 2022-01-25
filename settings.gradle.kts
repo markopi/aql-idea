@@ -1,1 +1,1 @@
-rootProject.name = "idea-first-plugin"
+rootProject.name = "aql-idea"
