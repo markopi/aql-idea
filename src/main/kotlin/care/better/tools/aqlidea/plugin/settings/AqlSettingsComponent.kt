@@ -21,7 +21,8 @@ class AqlSettingsComponent {
         mainPanel = FormBuilder.createFormBuilder()
             .addLabeledComponent(JBLabel("Server URL:"), serverUrlField)
             .addComponentToRightColumn(
-                JBLabel("<html>Server URL must refer to an openEHR rest api, for example for ThinkEHR server<br>it should be something like: http://localhost:8082/rest/openehr/v1",
+                JBLabel("<html>Server URL must refer to a ThinkEHR server web address," +
+                        "<br>for example: http://localhost:8082",
                 UIUtil.ComponentStyle.SMALL, UIUtil.FontColor.BRIGHTER))
             .addLabeledComponent(JBLabel("Username:"), usernameField)
             .addLabeledComponent(JBLabel("Password:"), passwordField)

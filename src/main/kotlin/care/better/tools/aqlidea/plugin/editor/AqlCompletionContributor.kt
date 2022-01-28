@@ -1,5 +1,6 @@
 package care.better.tools.aqlidea.plugin.editor
 
+import care.better.tools.aqlidea.aql.CustomAqlLexer
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.patterns.PlatformPatterns

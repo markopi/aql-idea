@@ -5,7 +5,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 
 internal class AqlCompletionProviderTest : BasePlatformTestCase() {
-    val completionProvider = AqlCompletionContributor.AqlCompletionProvider()
+    val completionProvider = AqlCompletionContributor.AqlCompletionProvider
 
     fun testPositionInfoClause() {
         val aql = "select c from ehr e contains composition c where 1=1 limit 10"

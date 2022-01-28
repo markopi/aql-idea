@@ -1,5 +1,6 @@
 package care.better.tools.aqlidea.plugin.editor
 
+import care.better.tools.aqlidea.aql.CustomAqlLexer
 import com.intellij.ide.highlighter.custom.CustomHighlighterColors
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.colors.TextAttributesKey

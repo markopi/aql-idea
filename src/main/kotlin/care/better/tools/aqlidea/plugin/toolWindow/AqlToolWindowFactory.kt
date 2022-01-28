@@ -29,15 +29,15 @@ class AqlToolWindowFactory: ToolWindowFactory {
 
         fun updateTableValues(response: ThinkEhrQueryResponse) {
             val model = DefaultTableModel()
-            for (column in response.columns) {
-                model.addColumn(column.name)
-            }
-            for (row in response.rows) {
-                if (row is List<*>) {
-                    model.addRow(row.map { it?.toString() }.toTypedArray())
-                } else {
-                    model.addRow(arrayOf( row?.toString()))
+
+            response.resultSet.firstOrNull()
+                ?.keys
+                ?.forEach {
+                    model.addColumn(it)
                 }
+
+            for (row in response.resultSet) {
+                model.addRow(row.values.toTypedArray())
             }
             table.model = model
         }

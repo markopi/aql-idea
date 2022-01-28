@@ -21,7 +21,7 @@ object ThinkEhrClient {
     private val log: Logger = Logger.getInstance(ThinkEhrClient::class.java)
 
     fun query(target: ThinkEhrTarget, aql: String): ThinkEhrQueryResponse {
-        val url = target.url + "/query/aql"
+        val url = target.url + "/rest/v1/query"
         val request = HttpRequest.newBuilder(URI.create(url))
             .POST(HttpRequest.BodyPublishers.ofString(buildRequestBodyString(aql)))
             .header("Authorization", buildAuthorizationHeader(target))
@@ -54,7 +54,7 @@ object ThinkEhrClient {
 
     private fun buildRequestBodyString(aql: String): String {
         val request = mutableMapOf<String, Any?>()
-        request["q"] = aql
+        request["aql"] = aql
         return objectMapper.writeValueAsString(request)
     }
 }

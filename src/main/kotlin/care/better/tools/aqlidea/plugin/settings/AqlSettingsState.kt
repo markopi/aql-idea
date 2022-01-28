@@ -13,6 +13,9 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 )
 class AqlSettingsState : PersistentStateComponent<AqlSettingsState> {
     var serverUrl: String = ""
+        // todo trim openehr suffix for backward compatibility reasons
+        get() = field.removeSuffix("/rest/openehr/v1")
+
     var loginUsername: String = ""
     var loginPassword: String = ""
 
