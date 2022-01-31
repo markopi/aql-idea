@@ -70,7 +70,7 @@ class AqlCompletionContributor : CompletionContributor() {
                     return PositionInfo(clause = clause, previousKeyword = previousKeyword?.text)
                 }
 
-                if (tokenType == CustomHighlighterTokenType.KEYWORD_1 || tokenType==CustomHighlighterTokenType.KEYWORD_2) {
+                if (tokenType == AqlTextTokenTypes.AQL_KEYWORD || tokenType==AqlTextTokenTypes.AQL_RM_TYPE) {
                     val tokenText = aql.substring(tokenStart, tokenEnd)
                     val tokenTextLowercase = tokenText.toLowerCase()
                     previousKeyword = Token(tokenTextLowercase, tokenStart, tokenEnd, tokenType)

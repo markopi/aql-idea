@@ -14,30 +14,28 @@ class AqlSyntaxHighlighter: SyntaxHighlighterBase() {
     init {
         val ourKeys = HashMap<IElementType, TextAttributesKey>()
 
-        ourKeys[CustomHighlighterTokenType.KEYWORD_1] =
+        ourKeys[AqlTextTokenTypes.AQL_KEYWORD] =
             CustomHighlighterColors.CUSTOM_KEYWORD1_ATTRIBUTES
-        ourKeys[CustomHighlighterTokenType.KEYWORD_2] =
+        ourKeys[AqlTextTokenTypes.AQL_RM_TYPE] =
             CustomHighlighterColors.CUSTOM_KEYWORD2_ATTRIBUTES
-        ourKeys[CustomHighlighterTokenType.KEYWORD_3] =
-            CustomHighlighterColors.CUSTOM_KEYWORD3_ATTRIBUTES
-        ourKeys[CustomHighlighterTokenType.KEYWORD_4] =
-            CustomHighlighterColors.CUSTOM_KEYWORD4_ATTRIBUTES
-        ourKeys[CustomHighlighterTokenType.NUMBER] =
+//        ourKeys[CustomHighlighterTokenType.KEYWORD_3] =
+//            CustomHighlighterColors.CUSTOM_KEYWORD3_ATTRIBUTES
+//        ourKeys[CustomHighlighterTokenType.KEYWORD_4] =
+//            CustomHighlighterColors.CUSTOM_KEYWORD4_ATTRIBUTES
+        ourKeys[AqlTextTokenTypes.AQL_NUMBER] =
             CustomHighlighterColors.CUSTOM_NUMBER_ATTRIBUTES
-        ourKeys[CustomHighlighterTokenType.STRING] =
+        ourKeys[AqlTextTokenTypes.AQL_STRING] =
             CustomHighlighterColors.CUSTOM_STRING_ATTRIBUTES
-        ourKeys[CustomHighlighterTokenType.SINGLE_QUOTED_STRING] =
-            CustomHighlighterColors.CUSTOM_STRING_ATTRIBUTES
-        ourKeys[StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN] =
-            CustomHighlighterColors.CUSTOM_VALID_STRING_ESCAPE
-        ourKeys[StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN] =
-            CustomHighlighterColors.CUSTOM_INVALID_STRING_ESCAPE
-        ourKeys[StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN] =
-            CustomHighlighterColors.CUSTOM_INVALID_STRING_ESCAPE
-        ourKeys[CustomHighlighterTokenType.LINE_COMMENT] =
+//        ourKeys[StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN] =
+//            CustomHighlighterColors.CUSTOM_VALID_STRING_ESCAPE
+//        ourKeys[StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN] =
+//            CustomHighlighterColors.CUSTOM_INVALID_STRING_ESCAPE
+//        ourKeys[StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN] =
+//            CustomHighlighterColors.CUSTOM_INVALID_STRING_ESCAPE
+        ourKeys[AqlTextTokenTypes.AQL_COMMENT] =
             CustomHighlighterColors.CUSTOM_LINE_COMMENT_ATTRIBUTES
-        ourKeys[CustomHighlighterTokenType.MULTI_LINE_COMMENT] =
-            CustomHighlighterColors.CUSTOM_MULTI_LINE_COMMENT_ATTRIBUTES
+//        ourKeys[CustomHighlighterTokenType.MULTI_LINE_COMMENT] =
+//            CustomHighlighterColors.CUSTOM_MULTI_LINE_COMMENT_ATTRIBUTES
 
         this.ourKeys = ourKeys
     }
