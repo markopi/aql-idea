@@ -10,7 +10,7 @@ import com.intellij.psi.tree.IElementType
 class CustomAqlLexer : AbstractCustomLexer(buildTokenParsers()) {
 
     companion object {
-        fun buildTokenParsers(): List<TokenParser> {
+        private fun buildTokenParsers(): List<TokenParser> {
             val result = mutableListOf<TokenParser>()
             result += WhitespaceParser()
             result += LineCommentParser("--", false)
@@ -24,6 +24,17 @@ class CustomAqlLexer : AbstractCustomLexer(buildTokenParsers()) {
             result += BraceTokenParser.getBrackets()
             return result
         }
+
+        val aqlKeywords = setOf(
+            "all_versions", "and", "as", "asc", "ascending", "contains", "distinct", "desc", "descending",
+            "exists", "from", "group", "by", "having", "like", "not", "null", "offset", "limit", "or", "order",
+            "select", "top", "union", "where", "xor"
+        )
+        val aqlRmTypes = setOf(
+            "ehr", "version", "versioned_object",
+            "composition", "observation", "evaluation", "section", "cluster", "admin_entry",
+            "element", "instruction", "action"
+        )
     }
 
     private class AqlKeywordTokenParser : TokenParser() {
@@ -35,16 +46,8 @@ class CustomAqlLexer : AbstractCustomLexer(buildTokenParsers()) {
 
         companion object {
             private val keywordsByType = listOf(
-                AqlTextTokenTypes.AQL_KEYWORD to setOf(
-                    "all_versions", "and", "as", "asc", "ascending", "contains", "distinct", "desc", "descending",
-                    "exists", "from", "group", "by", "having", "like", "not", "null", "offset", "limit", "or", "order",
-                    "select", "top", "union", "where", "xor"
-                ),
-                AqlTextTokenTypes.AQL_RM_TYPE to setOf(
-                    "ehr", "version", "versioned_object",
-                    "composition", "observation", "evaluation", "section", "cluster", "admin_entry",
-                    "element", "instruction", "action"
-                )
+                AqlTextTokenTypes.AQL_KEYWORD to aqlKeywords,
+                AqlTextTokenTypes.AQL_RM_TYPE to aqlRmTypes
             )
         }
     }
@@ -64,14 +67,14 @@ class CustomAqlLexer : AbstractCustomLexer(buildTokenParsers()) {
 
     private class WhitespaceParser : TokenParser() {
         override fun hasToken(position: Int): Boolean {
-            var position = position
-            if (!Character.isWhitespace(myBuffer[position])) return false
-            val start = position
-            position++
-            while (position < myEndOffset && Character.isWhitespace(myBuffer[position])) {
-                position++
+            var pos = position
+            if (!Character.isWhitespace(myBuffer[pos])) return false
+            val start = pos
+            pos++
+            while (pos < myEndOffset && Character.isWhitespace(myBuffer[pos])) {
+                pos++
             }
-            myTokenInfo.updateData(start, position, AqlTextTokenTypes.AQL_WHITESPACE)
+            myTokenInfo.updateData(start, pos, AqlTextTokenTypes.AQL_WHITESPACE)
             return true
         }
     }
@@ -96,7 +99,7 @@ class CustomAqlLexer : AbstractCustomLexer(buildTokenParsers()) {
     }
 
     private class SymbolParser : TokenParser() {
-        private val symbols = ".,:;"
+        private val symbols = ".,:;/-_+=<>!"
 
         override fun hasToken(position: Int): Boolean {
             val c = myBuffer[position]
@@ -152,9 +155,6 @@ class CustomAqlLexer : AbstractCustomLexer(buildTokenParsers()) {
         }
 
         companion object {
-            //these getters here can't be replaced with constant fields because each token parser remembers the buffer
-            // which in DocumentImpl.getCharSequence() maintains a reference to the document and thus many
-            // things will be leaked
             fun getBraces(): List<BraceTokenParser> = listOf(
                 BraceTokenParser("{", AqlTextTokenTypes.AQL_SYMBOL_BRACE),
                 BraceTokenParser("}", AqlTextTokenTypes.AQL_SYMBOL_BRACE)

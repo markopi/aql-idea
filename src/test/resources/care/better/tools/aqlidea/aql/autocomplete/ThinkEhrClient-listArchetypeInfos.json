@@ -1,0 +1,53 @@
+[
+  {
+    "type": "CLUSTER",
+    "archetypeId": "openEHR-EHR-CLUSTER.coronary_artery_bypass_tmc.v1",
+    "names": [
+      "Coronary artery bypass"
+    ],
+    "localizedNames": [
+      {
+        "en": "Coronary artery bypass",
+        "sl": "Obvod na koronarni arteriji (Bypass)"
+      }
+    ]
+  },
+  {
+    "type": "OBSERVATION",
+    "archetypeId": "openEHR-EHR-OBSERVATION.global_zn.v1",
+    "names": [
+      "General assessment"
+    ],
+    "localizedNames": [
+      {
+        "en": "General assessment",
+        "sl": "Splošna ocena kože"
+      }
+    ]
+  },
+  {
+    "type": "OBSERVATION",
+    "archetypeId": "openEHR-EHR-OBSERVATION.ideal_body_mass.v1",
+    "names": [
+      "Ideal body weight"
+    ],
+    "localizedNames": [
+      {
+        "en": "Ideal body weight",
+        "sl": "Idealna telesna teža"
+      }
+    ]
+  },
+  {
+    "type": "COMPOSITION",
+    "archetypeId": "openEHR-EHR-COMPOSITION.report.v1",
+    "names": [
+      "Diagnosis"
+    ],
+    "localizedNames": [
+      {
+        "en": "Diagnosis"
+      }
+    ]
+  }
+]

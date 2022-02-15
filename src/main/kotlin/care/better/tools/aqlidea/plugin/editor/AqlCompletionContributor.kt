@@ -1,11 +1,17 @@
 package care.better.tools.aqlidea.plugin.editor
 
-import care.better.tools.aqlidea.aql.CustomAqlLexer
+import care.better.tools.aqlidea.aql.LexedAql
+import care.better.tools.aqlidea.aql.autocomplete.AqlAutocompletion
+import care.better.tools.aqlidea.aql.autocomplete.AqlKeywordAutocompletionProvider
+import care.better.tools.aqlidea.aql.autocomplete.AqlServerAutocompletionProvider
+import care.better.tools.aqlidea.plugin.service.ThinkEhrClientService
 import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns
-import com.intellij.psi.CustomHighlighterTokenType
-import com.intellij.psi.tree.IElementType
 import com.intellij.util.ProcessingContext
 
 
@@ -18,20 +24,7 @@ class AqlCompletionContributor : CompletionContributor() {
     }
 
     object AqlCompletionProvider : CompletionProvider<CompletionParameters>() {
-        private val keywordsByClause: Map<String?, Set<String>> = mapOf(
-            null to keywords("select"),
-            "select" to keywords("as from count min max avg distinct"),
-            "from" to keywords("contains ehr composition observation evaluation instruction action admin_entry where order+by offset limit fetch version versioned_object cluster top section union+all task_plan work_plan"),
-            "where" to keywords("and or xor not exists matches order+by offset limit fetch union+all"),
-            "order" to keywords("asc desc ascending descending offset limit fetch"),
-            "limit" to keywords("limit fetch offset")
-        )
 
-        private fun keywords(keywords: String): Set<String> {
-            return keywords.split(" ")
-                .map { it.replace('+', ' ') }
-                .toSet()
-        }
 
         public override fun addCompletions(
             parameters: CompletionParameters,
@@ -40,57 +33,76 @@ class AqlCompletionContributor : CompletionContributor() {
         ) {
             val aql = parameters.originalPosition!!.text
             val offset = parameters.offset
-            val positionInfo = getPositionInfo(aql, offset)
+            val autocompletions = getAutocompletions(aql, offset, parameters.editor.project)
+            if (autocompletions.isEmpty()) return
+            val first = autocompletions.first()
+            val prefix = parameters.editor.document.getText(TextRange(first.start, first.end))
+            val originalText = parameters.editor.document.text
 
-            val keywords = keywordsByClause[positionInfo.clause] ?: return
-            val actualKeywords = keywords
-                .filter { it != positionInfo.previousKeyword}
-                .sorted()
-            actualKeywords.forEach { keyword ->
-                resultSet.addElement(LookupElementBuilder.create(keyword))
-            }
-//
-//
-//            resultSet.addElement(LookupElementBuilder.create("Hello"))
-        }
+            // todo
+            val rs = resultSet.withPrefixMatcher(resultSet.prefixMatcher.cloneWithPrefix(prefix))
 
-        fun getPositionInfo(aql: String, offset: Int): PositionInfo {
-            var clause: String? = null
-            var previousKeyword: Token? = null
-
-            val lexer = CustomAqlLexer()
-            lexer.start(aql)
-            var tokenType: IElementType? = lexer.tokenType
-
-            while (tokenType != null) {
-                val tokenStart = lexer.tokenStart
-                val tokenEnd = lexer.tokenEnd
-
-                if (tokenStart > offset || tokenEnd > offset) {
-                    return PositionInfo(clause = clause, previousKeyword = previousKeyword?.text)
-                }
-
-                if (tokenType == AqlTextTokenTypes.AQL_KEYWORD || tokenType==AqlTextTokenTypes.AQL_RM_TYPE) {
-                    val tokenText = aql.substring(tokenStart, tokenEnd)
-                    val tokenTextLowercase = tokenText.toLowerCase()
-                    previousKeyword = Token(tokenTextLowercase, tokenStart, tokenEnd, tokenType)
-                    when (tokenTextLowercase) {
-                        "select", "from", "where", "order" ->
-                            clause = tokenTextLowercase
-                        "limit", "fetch", "offset" ->
-                            clause = "limit"
+            for (ac in autocompletions) {
+                when (ac) {
+                    is AqlAutocompletion.Keyword -> {
+                        rs.addElement(
+                            LookupElementBuilder.create(ac.completion)
+                                .withInsertHandler(AqlInsertHandler(originalText, 0, ac))
+                        )
                     }
-                }
+                    is AqlAutocompletion.Archetype -> {
+                        rs.addElement(
+                            LookupElementBuilder.create(ac.completion)
+                                .withPresentableText(ac.archetypeId)
+                                .withTailText(ac.name)
+                                .withInsertHandler(AqlInsertHandler(originalText, 0, ac))
+                        )
+                    }
+                    is AqlAutocompletion.Path -> {
+                        var e =  LookupElementBuilder.create(ac.completion)
+                            .withPresentableText(ac.path)
+                            .withTypeText(ac.type)
+                            .withTailText(ac.name)
+                            .withLookupString(ac.path + " " + (ac.name ?: ""))
+                            .withInsertHandler(AqlInsertHandler(originalText, 0, ac))
 
-
-                lexer.advance()
-                tokenType = lexer.tokenType
+                        rs.addElement(e)
+                    }
+                }.run { }
             }
-            lexer.advance()
-            return PositionInfo(clause = clause, previousKeyword = previousKeyword?.text)
+
+
         }
 
-        data class Token(val text: String, val start: Int, val end: Int, val type: IElementType)
-        data class PositionInfo(val clause: String?, val previousKeyword: String?)
+
+        fun getAutocompletions(aql: String, cursorOffset: Int, project: Project?): List<AqlAutocompletion> {
+            val lexedAql = LexedAql.of(aql, whitespaceAware = false)
+            val result = mutableListOf<AqlAutocompletion>()
+            val thinkEhr = ApplicationManager.getApplication().getService(ThinkEhrClientService::class.java)
+            val server = thinkEhr.getTarget(project)
+            if (server != null) {
+                result += AqlServerAutocompletionProvider(thinkEhr.client)
+                    .getAutocompletions(lexedAql, cursorOffset, server)
+            }
+            if (result.isEmpty()) {
+                result += AqlKeywordAutocompletionProvider.getAutocompletions(lexedAql, cursorOffset)
+            }
+
+            return result
+        }
+
+    }
+
+    // todo custom completion
+    private class AqlInsertHandler(val originalText: String, val anchorOffset: Int, val ac: AqlAutocompletion) : InsertHandler<LookupElement> {
+        override fun handleInsert(context: InsertionContext, item: LookupElement) {
+            // remove the text already inserted by idea
+            context.document.replaceString(0, context.document.textLength, originalText)
+//            context.document.deleteString(context.startOffset, context.tailOffset)
+
+            context.document.replaceString(anchorOffset + ac.start, anchorOffset + ac.end, ac.completion)
+
+            context.editor.caretModel.moveToOffset(anchorOffset + ac.start + ac.completion.length)
+        }
     }
 }

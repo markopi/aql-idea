@@ -1,0 +1,1277 @@
+{
+  "type": "OBSERVATION",
+  "archetypeId": "openEHR-EHR-OBSERVATION.global_zn.v1",
+  "names": [
+    "General assessment"
+  ],
+  "localizedNames": [
+    {
+      "en": "General assessment",
+      "sl": "Splošna ocena kože"
+    }
+  ],
+  "fields": [
+    {
+      "id": "/skin_colour/colour",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0017]/items[at0006]/value",
+      "type": "DV_CODED_TEXT",
+      "names": [
+        "Colour"
+      ],
+      "localizedNames": [
+        {
+          "en": "Colour",
+          "sl": "Barva"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0021",
+                "label": "Normal / Pink",
+                "localizedLabels": {
+                  "en": "Normal / Pink",
+                  "sl": "Normalna / Rožnata"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin appears normal.\n",
+                  "sl": "Normalna / Rožnata"
+                }
+              },
+              {
+                "value": "at0022",
+                "label": "Red (like blushing, but not restricted to face)",
+                "localizedLabels": {
+                  "en": "Red (like blushing, but not restricted to face)",
+                  "sl": "Rdeča"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin appears red, the colour of a blush.\n",
+                  "sl": "Rdeča"
+                }
+              },
+              {
+                "value": "at0023",
+                "label": "Pale",
+                "localizedLabels": {
+                  "en": "Pale",
+                  "sl": "Bleda"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin appears pale.\n",
+                  "sl": "Bleda"
+                }
+              },
+              {
+                "value": "at0024",
+                "label": "Ashen / gray",
+                "localizedLabels": {
+                  "en": "Ashen / gray",
+                  "sl": "Siva"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin apppears ashen or gray.\n",
+                  "sl": "Siva"
+                }
+              },
+              {
+                "value": "at0025",
+                "label": "Cyanotic",
+                "localizedLabels": {
+                  "en": "Cyanotic",
+                  "sl": "Cianozna"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin appears cyanotic.\n",
+                  "sl": "Cianozna"
+                }
+              },
+              {
+                "value": "at0026",
+                "label": "Yellow (refers to jaundice)",
+                "localizedLabels": {
+                  "en": "Yellow (refers to jaundice)",
+                  "sl": "Zlateničen"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin appears yellow/ jaundiced.\n",
+                  "sl": "Zlateničen"
+                }
+              },
+              {
+                "value": "at0027",
+                "label": "Yellow-green (refers to jaundice)",
+                "localizedLabels": {
+                  "en": "Yellow-green (refers to jaundice)",
+                  "sl": "Rumeno-zelena"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin apperas yellow-green/jaundiced\n",
+                  "sl": "Rumeno-zelena"
+                }
+              },
+              {
+                "value": "at0028",
+                "label": "Marble skin / Cutis marmorata",
+                "localizedLabels": {
+                  "en": "Marble skin / Cutis marmorata",
+                  "sl": "Marmorirana"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin appears marbled.\n",
+                  "sl": "Marmorirana"
+                }
+              },
+              {
+                "value": "at0054",
+                "label": "Other",
+                "localizedLabels": {
+                  "en": "Other",
+                  "sl": "Druga"
+                },
+                "localizedDescriptions": {
+                  "en": "Other colour",
+                  "sl": "Druga barva, ki ni navedena"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/skin_colour/pallor_location",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0017]/items[at0004]/value",
+      "type": "DV_CODED_TEXT",
+      "names": [
+        "Pallor location"
+      ],
+      "localizedNames": [
+        {
+          "en": "Pallor location",
+          "sl": "Lokacija bledice"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0029",
+                "label": "Only face",
+                "localizedLabels": {
+                  "en": "Only face",
+                  "sl": "Samo obraz"
+                },
+                "localizedDescriptions": {
+                  "en": "Pallor is restricted to the face.\n",
+                  "sl": "Samo obraz"
+                }
+              },
+              {
+                "value": "at0030",
+                "label": "Fingers & toes",
+                "localizedLabels": {
+                  "en": "Fingers & toes",
+                  "sl": "Prsti roke in noge"
+                },
+                "localizedDescriptions": {
+                  "en": "Pallor is restricted to the fingers and toes.\n",
+                  "sl": "Prsti (roke in noge)"
+                }
+              },
+              {
+                "value": "at0031",
+                "label": "Extremities",
+                "localizedLabels": {
+                  "en": "Extremities",
+                  "sl": "Roke in noge"
+                },
+                "localizedDescriptions": {
+                  "en": "Pallor is restricted to the extremities.\n",
+                  "sl": "Roke in noge"
+                }
+              },
+              {
+                "value": "at0032",
+                "label": "Whole body",
+                "localizedLabels": {
+                  "en": "Whole body",
+                  "sl": "Celotno telo"
+                },
+                "localizedDescriptions": {
+                  "en": "The whole body is pale.\n",
+                  "sl": "Celotno telo"
+                }
+              },
+              {
+                "value": "at0052",
+                "label": "Fingers",
+                "localizedLabels": {
+                  "en": "Fingers",
+                  "sl": "Prsti na roki"
+                },
+                "localizedDescriptions": {
+                  "en": "Fingers on hend",
+                  "sl": "Prsti na roki"
+                }
+              },
+              {
+                "value": "at0053",
+                "label": "Toes",
+                "localizedLabels": {
+                  "en": "Toes",
+                  "sl": "Prsti na nogi"
+                },
+                "localizedDescriptions": {
+                  "en": "Toes",
+                  "sl": "Prsti na nogi"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/skin_colour/cyanosis_location",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0017]/items[at0005]/value",
+      "type": "DV_CODED_TEXT",
+      "names": [
+        "Cyanosis location"
+      ],
+      "localizedNames": [
+        {
+          "en": "Cyanosis location",
+          "sl": "Lokacija cianoze"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0047",
+                "label": "Whole body",
+                "localizedLabels": {
+                  "en": "Whole body",
+                  "sl": "Ves"
+                },
+                "localizedDescriptions": {
+                  "en": "All body",
+                  "sl": "Celo telo"
+                }
+              },
+              {
+                "value": "at0048",
+                "label": "Visible mucouses",
+                "localizedLabels": {
+                  "en": "Visible mucouses",
+                  "sl": "Vidne sluznice"
+                },
+                "localizedDescriptions": {
+                  "en": "Visible mucouses",
+                  "sl": "Vidne sluznice"
+                }
+              },
+              {
+                "value": "at0049",
+                "label": "Mouth",
+                "localizedLabels": {
+                  "en": "Mouth",
+                  "sl": "Usta"
+                },
+                "localizedDescriptions": {
+                  "en": "Mouth",
+                  "sl": "Usta"
+                }
+              },
+              {
+                "value": "at0050",
+                "label": "Top of the fingers and toes",
+                "localizedLabels": {
+                  "en": "Top of the fingers and toes",
+                  "sl": "Konice prstov"
+                },
+                "localizedDescriptions": {
+                  "en": "Top of the fingers and toes",
+                  "sl": "Konice prstov"
+                }
+              },
+              {
+                "value": "at0051",
+                "label": "Fingers, toes and visible mucouses",
+                "localizedLabels": {
+                  "en": "Fingers, toes and visible mucouses",
+                  "sl": "Prsti in vidne sluznice"
+                },
+                "localizedDescriptions": {
+                  "en": "Fingers, toes and visible mucouses",
+                  "sl": "Prsti in vidne sluznice"
+                }
+              },
+              {
+                "value": "at0055",
+                "label": "Peroral parth",
+                "localizedLabels": {
+                  "en": "Peroral parth",
+                  "sl": "Peroralni del"
+                },
+                "localizedDescriptions": {
+                  "en": "Peroral parth",
+                  "sl": "Peroralni del"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/skin_colour/other_colour",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0017]/items[at0020]/value",
+      "type": "DV_TEXT",
+      "names": [
+        "Other colour"
+      ],
+      "localizedNames": [
+        {
+          "en": "Other colour",
+          "sl": "Druga"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "type": "TEXT"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/skin_colour/trancutaneous_bilirubin/value",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0017]/items[at0007]/items[at0009]/value",
+      "type": "DV_QUANTITY",
+      "names": [
+        "Value"
+      ],
+      "localizedNames": [
+        {
+          "en": "Value",
+          "sl": "Vrednost"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "magnitude",
+            "type": "DECIMAL",
+            "validation": {
+              "range": {
+                "minOp": ">=",
+                "min": 0
+              }
+            }
+          },
+          {
+            "suffix": "unit",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "µmol/l",
+                "label": "µmol/l",
+                "validation": {
+                  "range": {
+                    "minOp": ">=",
+                    "min": 0
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/skin_colour/trancutaneous_bilirubin/location",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0017]/items[at0007]/items[at0008]/value",
+      "type": "DV_CODED_TEXT",
+      "names": [
+        "Location"
+      ],
+      "localizedNames": [
+        {
+          "en": "Location",
+          "sl": "Lokacija"
+        }
+      ],
+      "annotations": {
+        "default": "ISPEK-OTS MZN-SIF-"
+      },
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0056",
+                "label": "Forehead",
+                "localizedLabels": {
+                  "en": "Forehead",
+                  "sl": "Čelo"
+                },
+                "localizedDescriptions": {
+                  "en": "The transcutaneous bilirubi  is measured at forehead of infant",
+                  "sl": "Bilirubin je izmerjen na čelu novorojenčka"
+                }
+              },
+              {
+                "value": "at0057",
+                "label": "Sternum",
+                "localizedLabels": {
+                  "en": "Sternum",
+                  "sl": "Prsnica"
+                },
+                "localizedDescriptions": {
+                  "en": "The transcutaneous bilirubi  is measured at sternum of infant",
+                  "sl": "Bilirubin je izmerjen na prsnici novorojenčka"
+                }
+              }
+            ],
+            "listOpen": true
+          },
+          {
+            "suffix": "other",
+            "type": "TEXT"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/skin_temperature/temperature",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0010]/items[at0012]/value",
+      "type": "DV_CODED_TEXT",
+      "names": [
+        "Temperature"
+      ],
+      "localizedNames": [
+        {
+          "en": "Temperature",
+          "sl": "Temperatura"
+        }
+      ],
+      "annotations": {
+        "default": "ISPEK-OTS MZN-SIF-Koža-Temp"
+      },
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0039",
+                "label": "Warm",
+                "localizedLabels": {
+                  "en": "Warm",
+                  "sl": "Topla"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin is warm.",
+                  "sl": "Topla"
+                }
+              },
+              {
+                "value": "at0040",
+                "label": "Cold",
+                "localizedLabels": {
+                  "en": "Cold",
+                  "sl": "Hladna"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin is cold.",
+                  "sl": "Hladna"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/skin_temperature/location_of_warmth",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0010]/items[at0011]/value",
+      "type": "DV_CODED_TEXT",
+      "names": [
+        "Location of warmth"
+      ],
+      "localizedNames": [
+        {
+          "en": "Location of warmth",
+          "sl": "Lokacija tople kože"
+        }
+      ],
+      "annotations": {
+        "default": "ISPEK-OTS MZN-SIF-Koža-TempLok"
+      },
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0033",
+                "label": "Fingers & toes",
+                "localizedLabels": {
+                  "en": "Fingers & toes",
+                  "sl": "Prsti na rokah in nogah"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to fingers and toes.\n",
+                  "sl": "Nenavadna toplota prstov na rokah in nogah"
+                }
+              },
+              {
+                "value": "at0034",
+                "label": "Left arm",
+                "localizedLabels": {
+                  "en": "Left arm",
+                  "sl": "Leva roka"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to the left arm.\n",
+                  "sl": "Nenavadna toplota kože na levi roki"
+                }
+              },
+              {
+                "value": "at0035",
+                "label": "Right arm",
+                "localizedLabels": {
+                  "en": "Right arm",
+                  "sl": "Desna roka"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to the right arm.\n",
+                  "sl": "Desna roka"
+                }
+              },
+              {
+                "value": "at0036",
+                "label": "Left leg",
+                "localizedLabels": {
+                  "en": "Left leg",
+                  "sl": "Leva noga"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to the left leg.\n",
+                  "sl": "Leva noga"
+                }
+              },
+              {
+                "value": "at0037",
+                "label": "Right leg",
+                "localizedLabels": {
+                  "en": "Right leg",
+                  "sl": "Desna noga"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to the right leg.\n",
+                  "sl": "Desna noga"
+                }
+              },
+              {
+                "value": "at0038",
+                "label": "Whole body",
+                "localizedLabels": {
+                  "en": "Whole body",
+                  "sl": "Celotno telo"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to the whole body\n",
+                  "sl": "Celotno telo"
+                }
+              },
+              {
+                "value": "at0058",
+                "label": "Peripheral parts of the body",
+                "localizedLabels": {
+                  "en": "Peripheral parts of the body",
+                  "sl": "Periferija"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to peripherial parts of the body",
+                  "sl": "Nenavadna toplota kože na periferiji telesa"
+                }
+              },
+              {
+                "value": "at0059",
+                "label": "Central part of the body",
+                "localizedLabels": {
+                  "en": "Central part of the body",
+                  "sl": "Centralno"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to central parth of the body",
+                  "sl": "Nenavadna toplota kože na centralnem delu telesa (brez periferije)"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/skin_temperature/location_of_cold",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0010]/items[at0060]/value",
+      "type": "DV_CODED_TEXT",
+      "names": [
+        "Location of cold"
+      ],
+      "localizedNames": [
+        {
+          "en": "Location of cold",
+          "sl": "Lokacija hladne kože"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0061",
+                "label": "Fingers and toes",
+                "localizedLabels": {
+                  "en": "Fingers and toes",
+                  "sl": "Prsti na rokah in nogah"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to fingers and toes.",
+                  "sl": "Nenavadno hladna koža prstov na rokah in nogah"
+                }
+              },
+              {
+                "value": "at0062",
+                "label": "Left arm",
+                "localizedLabels": {
+                  "en": "Left arm",
+                  "sl": "Leva roka"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to left arm",
+                  "sl": "Nenavadno hladna koža na levi roki"
+                }
+              },
+              {
+                "value": "at0063",
+                "label": "Right arm",
+                "localizedLabels": {
+                  "en": "Right arm",
+                  "sl": "Desna roka"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to right arm",
+                  "sl": "Nenavadno hladna koža na desnii roki"
+                }
+              },
+              {
+                "value": "at0064",
+                "label": "Left leg",
+                "localizedLabels": {
+                  "en": "Left leg",
+                  "sl": "Leva noga"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to left leg",
+                  "sl": "Nenavadno hladna koža na levi nogi"
+                }
+              },
+              {
+                "value": "at0065",
+                "label": "Right leg",
+                "localizedLabels": {
+                  "en": "Right leg",
+                  "sl": "Desna noga"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to right leg",
+                  "sl": "Nenavadno hladna koža na desni nogi"
+                }
+              },
+              {
+                "value": "at0066",
+                "label": "Whole body",
+                "localizedLabels": {
+                  "en": "Whole body",
+                  "sl": "Celotno telo"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to whole body",
+                  "sl": "Nenavadno hladna koža po celem telesu"
+                }
+              },
+              {
+                "value": "at0067",
+                "label": "Peripheral parts of the body",
+                "localizedLabels": {
+                  "en": "Peripheral parts of the body",
+                  "sl": "Periferija"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to peripheral parts of the body",
+                  "sl": "Nenavadno hladna koža na periferiji telesa"
+                }
+              },
+              {
+                "value": "at0068",
+                "label": "Central part of the body",
+                "localizedLabels": {
+                  "en": "Central part of the body",
+                  "sl": "Centralno"
+                },
+                "localizedDescriptions": {
+                  "en": "The temperature change applies to central parth of the body",
+                  "sl": "Nenavadno hladna koža nacentralnem delu telesa"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/hydration/clinical_description",
+      "aql": "/items[at0003]/value",
+      "type": "DV_TEXT",
+      "containment": [
+        "openEHR-EHR-CLUSTER.hydration.v1"
+      ],
+      "names": [
+        "Clinical description"
+      ],
+      "localizedNames": [
+        {
+          "en": "Clinical description",
+          "sl": "Klinični opis"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "type": "TEXT"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/hydration/turgour",
+      "aql": "/items[at0015,'Turgour']/value",
+      "type": "DV_CODED_TEXT",
+      "containment": [
+        "openEHR-EHR-CLUSTER.hydration.v1"
+      ],
+      "names": [
+        "Turgour"
+      ],
+      "localizedNames": [
+        {
+          "en": "Turgour",
+          "sl": "Kapilarna polnitev"
+        }
+      ],
+      "annotations": {
+        "default": "L10n={sl=Kapilarna polnitev}"
+      },
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0016",
+                "label": "Normal",
+                "localizedLabels": {
+                  "en": "Normal",
+                  "sl": "Normalen"
+                },
+                "localizedDescriptions": {
+                  "en": "Skin turgor is normal.",
+                  "sl": "Normalen"
+                }
+              },
+              {
+                "value": "at0017",
+                "label": "Decreased",
+                "localizedLabels": {
+                  "en": "Decreased",
+                  "sl": "Zmanjšan"
+                },
+                "localizedDescriptions": {
+                  "en": "Skin turgor is decreased.",
+                  "sl": "Zmanjšan"
+                }
+              },
+              {
+                "value": "at0028",
+                "label": "Markedly decreased",
+                "localizedLabels": {
+                  "en": "Markedly decreased",
+                  "sl": "Zelo zmanjšan"
+                },
+                "localizedDescriptions": {
+                  "en": "Skin turgor is markedly decreased.",
+                  "sl": "Zelo zmanjšan"
+                }
+              },
+              {
+                "value": "at0029",
+                "label": "Increased",
+                "localizedLabels": {
+                  "en": "Increased",
+                  "sl": "Povečan"
+                },
+                "localizedDescriptions": {
+                  "en": "*",
+                  "sl": "Povečan"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/hydration/capillary_filling_time",
+      "aql": "/items[at0021,'Capillary filling time']/value",
+      "type": "DV_DURATION",
+      "containment": [
+        "openEHR-EHR-CLUSTER.hydration.v1"
+      ],
+      "names": [
+        "Capillary filling time"
+      ],
+      "localizedNames": [
+        {
+          "en": "Capillary filling time",
+          "sl": "Kapilarni povratek"
+        }
+      ],
+      "annotations": {
+        "default": "L10n={sl=Kapilarni povratek}"
+      },
+      "inputs": [
+        [
+          {
+            "suffix": "second",
+            "type": "INTEGER",
+            "validation": {
+              "range": {
+                "minOp": ">=",
+                "min": 0,
+                "maxOp": "<=",
+                "max": 120
+              }
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/moisture",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0019,'Moisture']/value",
+      "type": "DV_CODED_TEXT",
+      "names": [
+        "Moisture"
+      ],
+      "localizedNames": [
+        {
+          "en": "Moisture",
+          "sl": "Potenje"
+        }
+      ],
+      "annotations": {
+        "default": "L10n={sl=Potenje}"
+      },
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0041",
+                "label": "Normal",
+                "localizedLabels": {
+                  "en": "Normal",
+                  "sl": "Normalno"
+                },
+                "localizedDescriptions": {
+                  "en": "The degree of swearing is normal.\n",
+                  "sl": "Normaln potenje"
+                }
+              },
+              {
+                "value": "at0042",
+                "label": "Sweating increased",
+                "localizedLabels": {
+                  "en": "Sweating increased",
+                  "sl": "Povečano"
+                },
+                "localizedDescriptions": {
+                  "en": "Sweating is increased.\n",
+                  "sl": "Povečano "
+                }
+              },
+              {
+                "value": "at0043",
+                "label": "Heavy sweating",
+                "localizedLabels": {
+                  "en": "Heavy sweating",
+                  "sl": "Zelo povečano"
+                },
+                "localizedDescriptions": {
+                  "en": "Sweating is heavy.\n",
+                  "sl": "*Sweating is heavy.\n(en)"
+                }
+              },
+              {
+                "value": "at0044",
+                "label": "Only head is sweaty",
+                "localizedLabels": {
+                  "en": "Only head is sweaty",
+                  "sl": "Samo glava"
+                },
+                "localizedDescriptions": {
+                  "en": "Only the subject's head is sweaty.\n",
+                  "sl": "Samo glava"
+                }
+              },
+              {
+                "value": "at0045",
+                "label": "Dry",
+                "localizedLabels": {
+                  "en": "Dry",
+                  "sl": "Suha koža"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin is dry.\n",
+                  "sl": "Suha"
+                }
+              },
+              {
+                "value": "at0046",
+                "label": "Greasy",
+                "localizedLabels": {
+                  "en": "Greasy",
+                  "sl": "Mastna koža"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin is greasy.\n",
+                  "sl": "Mastna"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/sweat/substance_-_sweat",
+      "aql": "/items[at0001.1]/value",
+      "type": "DV_CODED_TEXT",
+      "containment": [
+        "openEHR-EHR-CLUSTER.bodily_substance-sweat.v1"
+      ],
+      "names": [
+        "Substance - sweat"
+      ],
+      "localizedNames": [
+        {
+          "en": "Substance - sweat",
+          "sl": "Pot"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0.95",
+                "label": "Sweat",
+                "localizedLabels": {
+                  "en": "Sweat",
+                  "sl": "Pot"
+                },
+                "localizedDescriptions": {
+                  "en": "The substance is sweat.",
+                  "sl": "Pot"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/sweat/quantity/amount_of_sweating",
+      "aql": "/items[at0006]/items[at0007,'Amount of sweating']/value",
+      "type": "DV_QUANTITY",
+      "containment": [
+        "openEHR-EHR-CLUSTER.bodily_substance-sweat.v1"
+      ],
+      "names": [
+        "Amount of sweating"
+      ],
+      "localizedNames": [
+        {
+          "en": "Amount of sweating",
+          "sl": "Količina"
+        }
+      ],
+      "annotations": {
+        "default": "L10n={sl=Količina}"
+      },
+      "inputs": [
+        [
+          {
+            "suffix": "magnitude",
+            "type": "DECIMAL"
+          },
+          {
+            "suffix": "unit",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "ml",
+                "label": "ml",
+                "validation": {
+                  "range": {
+                    "minOp": ">=",
+                    "min": 0
+                  },
+                  "precision": {
+                    "minOp": ">=",
+                    "min": 1,
+                    "maxOp": "<=",
+                    "max": 1
+                  }
+                }
+              },
+              {
+                "value": "l",
+                "label": "l",
+                "validation": {
+                  "range": {
+                    "minOp": ">=",
+                    "min": 0
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/phototheraphy",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0070]/value",
+      "type": "DV_BOOLEAN",
+      "names": [
+        "Phototheraphy"
+      ],
+      "localizedNames": [
+        {
+          "en": "Phototheraphy",
+          "sl": "Fototerapija"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "type": "BOOLEAN"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/how_many_hours",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0071]/value",
+      "type": "DV_TEXT",
+      "names": [
+        "How many hours"
+      ],
+      "localizedNames": [
+        {
+          "en": "How many hours",
+          "sl": "Število ur"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "type": "TEXT"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/time",
+      "aql": "/data[at0001]/events[at0002]/time",
+      "type": "DV_DATE_TIME",
+      "names": [
+        "Time"
+      ],
+      "localizedNames": [
+        {}
+      ],
+      "inputs": [
+        [
+          {
+            "type": "DATETIME"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/subject",
+      "aql": "/subject",
+      "type": "PARTY_PROXY",
+      "names": [
+        "Subject"
+      ],
+      "localizedNames": [
+        {}
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "id",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "id_scheme",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "id_namespace",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "name",
+            "type": "TEXT"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/sweating_degree",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0019]/value",
+      "type": "DV_CODED_TEXT",
+      "names": [
+        "Sweating degree"
+      ],
+      "localizedNames": [
+        {
+          "en": "Sweating degree",
+          "sl": "Stopnja potenja"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0041",
+                "label": "Normal",
+                "localizedLabels": {
+                  "en": "Normal",
+                  "sl": "Normalno"
+                },
+                "localizedDescriptions": {
+                  "en": "The degree of swearing is normal.\n                ",
+                  "sl": "Normaln potenje"
+                }
+              },
+              {
+                "value": "at0042",
+                "label": "Sweating increased",
+                "localizedLabels": {
+                  "en": "Sweating increased",
+                  "sl": "Povečano"
+                },
+                "localizedDescriptions": {
+                  "en": "Sweating is increased.\n                ",
+                  "sl": "Povečano"
+                }
+              },
+              {
+                "value": "at0043",
+                "label": "Heavy sweating",
+                "localizedLabels": {
+                  "en": "Heavy sweating",
+                  "sl": "Zelo povečano"
+                },
+                "localizedDescriptions": {
+                  "en": "Sweating is heavy.\n                ",
+                  "sl": "*Sweating is heavy.\n                    (en)\n                "
+                }
+              },
+              {
+                "value": "at0044",
+                "label": "Only head is sweaty",
+                "localizedLabels": {
+                  "en": "Only head is sweaty",
+                  "sl": "Samo glava"
+                },
+                "localizedDescriptions": {
+                  "en": "Only the subject's head is sweaty.\n                ",
+                  "sl": "Samo glava"
+                }
+              },
+              {
+                "value": "at0045",
+                "label": "Dry",
+                "localizedLabels": {
+                  "en": "Dry",
+                  "sl": "Suha koža"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin is dry.\n                ",
+                  "sl": "Suha"
+                }
+              },
+              {
+                "value": "at0046",
+                "label": "Greasy",
+                "localizedLabels": {
+                  "en": "Greasy",
+                  "sl": "Mastna koža"
+                },
+                "localizedDescriptions": {
+                  "en": "The skin is greasy.\n                ",
+                  "sl": "Mastna"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    }
+  ]
+}

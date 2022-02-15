@@ -34,7 +34,9 @@
         <applicationConfigurable parentId="tools" instance="care.better.tools.aqlidea.plugin.settings.AqlSettingsConfigurable"
                                  id="care.better.tools.aqlidea.plugin.settings.AqlSettingsConfigurable"
                                  displayName="AQL"/>
+<!--        <fileEditorProvider implementation="care.better.tools.aqlidea.plugin.editor.AqlEditorProvider"/>-->
         <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.settings.AqlSettingsState"/>
+        <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.service.ThinkEhrClientService"/>
     </extensions>
 
 

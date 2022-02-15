@@ -8,6 +8,13 @@ AQL support for Idea.
 
 <!-- Plugin description end -->
 
+## TODO
+* Data Sources (project/global?)
+* Execution log history (query/response)
+* Autocomplete
+* Publish/move to better-care github?
+* Tree view
+
 ## Installation
 
 - Using IDE built-in plugin system:
@@ -19,7 +26,6 @@ AQL support for Idea.
 
   Download the [latest release](https://github.com/markopi/aql-idea/releases/latest) and install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].

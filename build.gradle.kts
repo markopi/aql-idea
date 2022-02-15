@@ -36,6 +36,8 @@ repositories {
 dependencies {
 //    implementation("com.marand.thinkehr:thinkehr-framework:3.1.0-A30")
     implementation(group = "com.marand.thinkehr", name = "thinkehr-framework-aql-grammar", version = "3.1.0-A30")
+    testImplementation(group="org.mockito.kotlin", name="mockito-kotlin", version="4.0.0")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin

@@ -2,9 +2,9 @@ package care.better.tools.aqlidea.plugin.runner
 
 import care.better.tools.aqlidea.plugin.AqlPluginException
 import care.better.tools.aqlidea.plugin.editor.AqlTextTokenTypes
+import care.better.tools.aqlidea.plugin.service.ThinkEhrClientService
 import care.better.tools.aqlidea.plugin.settings.AqlSettingsState
 import care.better.tools.aqlidea.plugin.toolWindow.AqlToolWindowFactory
-import care.better.tools.aqlidea.thinkehr.ThinkEhrClient
 import care.better.tools.aqlidea.thinkehr.ThinkEhrTarget
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
@@ -13,6 +13,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.psi.PsiElement
@@ -30,29 +31,12 @@ class AqlRunLineMarkerProvider : RunLineMarkerContributor() {
 
     class RunAqlAction(val aql: String) : AnAction("Run AQL Query", "Run AQL query on configured server", AllIcons.RunConfigurations.TestState.Run) {
 
-        private fun getThinkEhrTarget(): ThinkEhrTarget? {
-            val settings = AqlSettingsState.INSTANCE
-            if (settings.serverUrl.isBlank()) return null
-            return ThinkEhrTarget(url = settings.serverUrl, username = settings.loginUsername, password = settings.loginPassword)
-        }
-
         override fun actionPerformed(event: AnActionEvent) {
-//            val n = Notification("AQL", "Started aql", NotificationType.INFORMATION)
-//            Notifications.Bus.notify(n, event.project)
-            val target = getThinkEhrTarget()
-            if (target == null) {
-                val n = Notification(
-                    "AQL",
-                    "AQL server not configured",
-                    "Please configure aql server in Settings / Tools / AQL",
-                    NotificationType.ERROR
-                )
-                Notifications.Bus.notify(n, event.project)
-                return
-            }
-
             try {
-                val r = ThinkEhrClient.query(target, aql)
+                val thinkehr = ApplicationManager.getApplication().getService(ThinkEhrClientService::class.java)
+                val target = thinkehr.getTarget(event.project) ?: return
+
+                val r = thinkehr.client.query(target, aql)
                 val toolWindow = ToolWindowManager.getInstance(event.project!!).getToolWindow("AQL")!!
                 toolWindow.activate {
                     AqlToolWindowFactory.updateTableValues(r)
@@ -71,7 +55,6 @@ class AqlRunLineMarkerProvider : RunLineMarkerContributor() {
                 Notifications.Bus.notify(n, event.project)
                 return
             }
-
         }
 
 

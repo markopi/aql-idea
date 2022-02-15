@@ -1,0 +1,120 @@
+{
+  "type": "OBSERVATION",
+  "archetypeId": "openEHR-EHR-OBSERVATION.ideal_body_mass.v1",
+  "names": [
+    "Ideal body weight"
+  ],
+  "localizedNames": [
+    {
+      "en": "Ideal body weight",
+      "sl": "Idealna telesna teža"
+    }
+  ],
+  "fields": [
+    {
+      "id": "/ideal_body_mass",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value",
+      "type": "DV_QUANTITY",
+      "names": [
+        "Ideal body mass"
+      ],
+      "localizedNames": [
+        {
+          "en": "Ideal body mass",
+          "sl": "Idealna telesna teža"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "magnitude",
+            "type": "DECIMAL",
+            "validation": {
+              "range": {
+                "minOp": ">=",
+                "min": 0
+              },
+              "precision": {
+                "minOp": ">=",
+                "min": 2,
+                "maxOp": "<=",
+                "max": 2
+              }
+            }
+          },
+          {
+            "suffix": "unit",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "kg",
+                "label": "kg",
+                "validation": {
+                  "range": {
+                    "minOp": ">=",
+                    "min": 0
+                  },
+                  "precision": {
+                    "minOp": ">=",
+                    "min": 2,
+                    "maxOp": "<=",
+                    "max": 2
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/time",
+      "aql": "/data[at0001]/events[at0002]/time",
+      "type": "DV_DATE_TIME",
+      "names": [
+        "Time"
+      ],
+      "localizedNames": [
+        {}
+      ],
+      "inputs": [
+        [
+          {
+            "type": "DATETIME"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/subject",
+      "aql": "/subject",
+      "type": "PARTY_PROXY",
+      "names": [
+        "Subject"
+      ],
+      "localizedNames": [
+        {}
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "id",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "id_scheme",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "id_namespace",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "name",
+            "type": "TEXT"
+          }
+        ]
+      ]
+    }
+  ]
+}

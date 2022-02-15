@@ -1,0 +1,90 @@
+{
+  "type": "OBSERVATION",
+  "archetypeId": "openEHR-EHR-OBSERVATION.height.v2",
+  "names": [
+    "Height/Length"
+  ],
+  "localizedNames": [
+    {
+      "fi": "Pituus",
+      "sv": "Kroppslängd eller längd",
+      "en": "Height/Length"
+    }
+  ],
+  "fields": [
+    {
+      "id": "/any_event/height_length",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0004]/value",
+      "type": "DV_QUANTITY",
+      "names": [
+        "Height/Length"
+      ],
+      "localizedNames": [
+        {
+          "fi": "Pituus",
+          "sv": "Kroppslängd eller längd",
+          "en": "Height/Length"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "magnitude",
+            "type": "DECIMAL",
+            "validation": {
+              "range": {
+                "minOp": ">=",
+                "min": 0,
+                "maxOp": "<=",
+                "max": 1000
+              }
+            }
+          },
+          {
+            "suffix": "unit",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "cm",
+                "label": "cm",
+                "localizedLabels": {
+                  "en": "centimeter"
+                },
+                "validation": {
+                  "range": {
+                    "minOp": ">=",
+                    "min": 0,
+                    "maxOp": "<=",
+                    "max": 1000
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/any_event/comment",
+      "aql": "/data[at0001]/events[at0002]/data[at0003]/items[at0018]/value",
+      "type": "DV_TEXT",
+      "names": [
+        "Comment"
+      ],
+      "localizedNames": [
+        {
+          "fi": "Kommentti",
+          "sv": "Kommentar",
+          "en": "Comment"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "type": "TEXT"
+          }
+        ]
+      ]
+    }
+  ]
+}

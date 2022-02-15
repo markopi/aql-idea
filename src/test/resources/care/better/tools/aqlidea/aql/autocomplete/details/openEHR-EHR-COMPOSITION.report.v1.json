@@ -1,0 +1,333 @@
+{
+  "type": "COMPOSITION",
+  "archetypeId": "openEHR-EHR-COMPOSITION.report.v1",
+  "names": [
+    "Diagnosis"
+  ],
+  "localizedNames": [
+    {
+      "en": "Diagnosis"
+    }
+  ],
+  "fields": [
+    {
+      "id": "/context/start_time",
+      "aql": "/context/start_time",
+      "type": "DV_DATE_TIME",
+      "names": [
+        "Start_time"
+      ],
+      "localizedNames": [
+        {}
+      ],
+      "inputs": [
+        [
+          {
+            "type": "DATETIME"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/context/setting",
+      "aql": "/context/setting",
+      "type": "DV_CODED_TEXT",
+      "names": [
+        "Setting"
+      ],
+      "localizedNames": [
+        {}
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "TEXT"
+          },
+          {
+            "suffix": "value",
+            "type": "TEXT"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/context/status",
+      "aql": "/context/other_context[at0001]/items[at0005]/value",
+      "type": "DV_TEXT",
+      "names": [
+        "Status"
+      ],
+      "localizedNames": [
+        {
+          "en": "Status"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "type": "TEXT",
+            "list": [
+              {
+                "value": "Draft",
+                "label": "Draft"
+              },
+              {
+                "value": "Final",
+                "label": "Final"
+              }
+            ],
+            "listOpen": false
+          }
+        ],
+        [
+          {
+            "type": "TEXT",
+            "list": [
+              {
+                "value": "Draft",
+                "label": "Draft"
+              },
+              {
+                "value": "Final",
+                "label": "Final"
+              },
+              {
+                "value": "Reviewed",
+                "label": "Reviewed"
+              }
+            ],
+            "listOpen": false
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/context/context_detail/period_of_care_identifier",
+      "aql": "/items[at0001]/value",
+      "type": "DV_TEXT",
+      "containment": [
+        "openEHR-EHR-CLUSTER.composition_context_detail.v1"
+      ],
+      "names": [
+        "Period of care identifier"
+      ],
+      "localizedNames": [
+        {
+          "en": "Period of care identifier"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "type": "TEXT"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/context/context_detail/departmental_period_of_care_identifier",
+      "aql": "/items[at0002]/value",
+      "type": "DV_TEXT",
+      "containment": [
+        "openEHR-EHR-CLUSTER.composition_context_detail.v1"
+      ],
+      "names": [
+        "Departmental period of care identifier"
+      ],
+      "localizedNames": [
+        {
+          "en": "Departmental period of care identifier"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "type": "TEXT"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/context/context_detail/portlet_id",
+      "aql": "/items[at0003]/value",
+      "type": "DV_TEXT",
+      "containment": [
+        "openEHR-EHR-CLUSTER.composition_context_detail.v1"
+      ],
+      "names": [
+        "Portlet Id"
+      ],
+      "localizedNames": [
+        {
+          "en": "Portlet Id"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "type": "TEXT"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/context/context_detail/medication_order_type",
+      "aql": "/items[at0004]/value",
+      "type": "DV_CODED_TEXT",
+      "containment": [
+        "openEHR-EHR-CLUSTER.composition_context_detail.v1"
+      ],
+      "names": [
+        "Medication order type"
+      ],
+      "localizedNames": [
+        {
+          "en": "Medication order type"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0005",
+                "label": "Oral",
+                "localizedLabels": {
+                  "en": "Oral"
+                },
+                "localizedDescriptions": {
+                  "en": "*"
+                }
+              },
+              {
+                "value": "at0006",
+                "label": "Intravenous",
+                "localizedLabels": {
+                  "en": "Intravenous"
+                },
+                "localizedDescriptions": {
+                  "en": "*"
+                }
+              },
+              {
+                "value": "at0007",
+                "label": "Mixture",
+                "localizedLabels": {
+                  "en": "Mixture"
+                },
+                "localizedDescriptions": {
+                  "en": "*"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/context/context_detail/tags",
+      "aql": "/items[at0008]/value",
+      "type": "DV_TEXT",
+      "containment": [
+        "openEHR-EHR-CLUSTER.composition_context_detail.v1"
+      ],
+      "names": [
+        "Tags"
+      ],
+      "localizedNames": [
+        {
+          "en": "Tags"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "type": "TEXT"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/context/context_detail/document_status",
+      "aql": "/items[at0010]/value",
+      "type": "DV_CODED_TEXT",
+      "containment": [
+        "openEHR-EHR-CLUSTER.composition_context_detail.v1"
+      ],
+      "names": [
+        "Document status"
+      ],
+      "localizedNames": [
+        {
+          "en": "Document status"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "suffix": "code",
+            "type": "CODED_TEXT",
+            "list": [
+              {
+                "value": "at0011",
+                "label": "Authorised",
+                "localizedLabels": {
+                  "en": "Authorised"
+                },
+                "localizedDescriptions": {
+                  "en": "*"
+                }
+              },
+              {
+                "value": "at0012",
+                "label": "Confirmed",
+                "localizedLabels": {
+                  "en": "Confirmed"
+                },
+                "localizedDescriptions": {
+                  "en": "*"
+                }
+              },
+              {
+                "value": "at0013",
+                "label": "Open",
+                "localizedLabels": {
+                  "en": "Open"
+                },
+                "localizedDescriptions": {
+                  "en": "*"
+                }
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "id": "/context/context_detail/attachment",
+      "aql": "/items[at0009]/value",
+      "type": "DV_MULTIMEDIA",
+      "containment": [
+        "openEHR-EHR-CLUSTER.composition_context_detail.v1"
+      ],
+      "names": [
+        "Attachment"
+      ],
+      "localizedNames": [
+        {
+          "en": "Attachment"
+        }
+      ],
+      "inputs": [
+        [
+          {
+            "type": "TEXT"
+          }
+        ]
+      ]
+    }
+  ]
+}
