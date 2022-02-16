@@ -21,9 +21,12 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 
 interface ThinkEhrClient {
-    fun query(target: ThinkEhrTarget, aql: String): ThinkEhrQueryResponse
+    fun query(target: ThinkEhrTarget, aql: String): QueryResponse
     fun listArchetypeInfos(target: ThinkEhrTarget): List<ThinkEhrArchetypeInfo>
     fun getArchetypeDetails(target: ThinkEhrTarget, archetypeId: String): ThinkEhrArchetypeDetails
+
+    class QueryResponse(val rawRequest: String, val rawResponse: String, val response: ThinkEhrQueryResponse)
+
 }
 
 class CachingThinkEhrClient(private val delegate: ThinkEhrClient) : ThinkEhrClient {
@@ -31,8 +34,9 @@ class CachingThinkEhrClient(private val delegate: ThinkEhrClient) : ThinkEhrClie
         .expireAfterWrite(60, TimeUnit.SECONDS)
         .build<Any, Any>()
 
-    override fun query(target: ThinkEhrTarget, aql: String): ThinkEhrQueryResponse {
-        TODO("Not yet implemented")
+    override fun query(target: ThinkEhrTarget, aql: String): ThinkEhrClient.QueryResponse {
+        // queries are not cached
+        return delegate.query(target, aql)
     }
 
     override fun listArchetypeInfos(target: ThinkEhrTarget): List<ThinkEhrArchetypeInfo> {
@@ -56,6 +60,7 @@ class CachingThinkEhrClient(private val delegate: ThinkEhrClient) : ThinkEhrClie
         }
     }
 
+
     private class ListArchetypeInfosKey(val target: ThinkEhrTarget)
     private class ArchetypeDetailsKey(val target: ThinkEhrTarget, val archetypeId: String)
 }
@@ -70,17 +75,20 @@ class ThinkEhrClientImpl : ThinkEhrClient {
     private val log: Logger = Logger.getInstance(ThinkEhrClient::class.java)
     private val timeout = Duration.ofSeconds(60)
 
-    override fun query(target: ThinkEhrTarget, aql: String): ThinkEhrQueryResponse {
+    override fun query(target: ThinkEhrTarget, aql: String): ThinkEhrClient.QueryResponse {
         val url = target.url + "/rest/v1/query"
+        val requestBody = buildRequestBodyString(aql)
         val request = HttpRequest.newBuilder(URI.create(url))
-            .POST(HttpRequest.BodyPublishers.ofString(buildRequestBodyString(aql)))
+            .POST(HttpRequest.BodyPublishers.ofString(requestBody))
             .header("Authorization", buildAuthorizationHeader(target))
             .header("Content-Type", "application/json")
             .timeout(timeout)
             .build()
         val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
         ensureSuccess(response, url)
-        return objectMapper.readValue(response.body(), ThinkEhrQueryResponse::class.java)
+        val rawResponseBody = response.body()
+        val parsedResponse =  objectMapper.readValue(rawResponseBody, ThinkEhrQueryResponse::class.java)
+        return ThinkEhrClient.QueryResponse(requestBody, rawResponseBody, parsedResponse)
     }
 
     private fun ensureSuccess(response: HttpResponse<String>, url: String) {

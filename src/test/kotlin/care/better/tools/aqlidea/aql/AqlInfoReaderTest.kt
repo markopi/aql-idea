@@ -10,7 +10,7 @@ internal class AqlInfoReaderTest {
     @Test
     fun readSimpleColumn() {
         val info = AqlInfoReader.readInfo("select c from composition c")
-        assertEquals(listOf(Column(VarPath("c", null, 7, 8), null)), info.columns)
+        assertEquals(listOf(Column(VarPath("c", null, 7, 8, AqlClause.select), null)), info.columns)
     }
 
     @Test
@@ -18,8 +18,8 @@ internal class AqlInfoReaderTest {
         val info = AqlInfoReader.readInfo("select c, o from composition c contains observation o")
         assertEquals(
             listOf(
-                Column(VarPath("c", null, 7, 8), null),
-                Column(VarPath("o", null, 10, 11), null)
+                Column(VarPath("c", null, 7, 8, AqlClause.select), null),
+                Column(VarPath("o", null, 10, 11, AqlClause.select), null)
             ), info.columns
         )
     }
@@ -27,13 +27,13 @@ internal class AqlInfoReaderTest {
     @Test
     fun readAliasedColumn() {
         val info = AqlInfoReader.readInfo("select c as comp from composition c")
-        assertEquals(listOf(Column(VarPath("c", null, 7, 8), "comp")), info.columns)
+        assertEquals(listOf(Column(VarPath("c", null, 7, 8, AqlClause.select), "comp")), info.columns)
     }
 
     @Test
     fun readColumnWithPath() {
         val info = AqlInfoReader.readInfo("select c/template_id/value from composition c")
-        assertEquals(listOf(Column(VarPath("c", "/template_id/value", 7, 26), null)), info.columns)
+        assertEquals(listOf(Column(VarPath("c", "/template_id/value", 7, 26, AqlClause.select), null)), info.columns)
     }
 
     @Test
@@ -43,7 +43,7 @@ internal class AqlInfoReaderTest {
         assertEquals(
             listOf(
                 Column(
-                    VarPath("a", "/data[at0001, 'Data']/items[at0002 and name/value='Test']/value/value", 7, 77),
+                    VarPath("a", "/data[at0001, 'Data']/items[at0002 and name/value='Test']/value/value", 7, 77, AqlClause.select),
                     null
                 )
             ), info.columns
@@ -57,7 +57,7 @@ internal class AqlInfoReaderTest {
         assertEquals(
             listOf(
                 Column(
-                    VarPath("a", "/data[at0001, 'Data']/items[at0002 and name/value='Test']/value/value", 7, 77),
+                    VarPath("a", "/data[at0001, 'Data']/items[at0002 and name/value='Test']/value/value", 7, 77, AqlClause.select),
                     "test"
                 )
             ), info.columns
@@ -70,11 +70,11 @@ internal class AqlInfoReaderTest {
             AqlInfoReader.readInfo("select c/template_id/value as template_id, c as comp, a, a/data[at0001, 'Data']/items[at0002 and name/value='Test']/value/value as test from composition c contains observation a")
         assertEquals(
             listOf(
-                Column(VarPath("c", "/template_id/value", 7, 26), "template_id"),
-                Column(VarPath("c", null, 43, 44), "comp"),
-                Column(VarPath("a", null, 54, 55), null),
+                Column(VarPath("c", "/template_id/value", 7, 26, AqlClause.select), "template_id"),
+                Column(VarPath("c", null, 43, 44, AqlClause.select), "comp"),
+                Column(VarPath("a", null, 54, 55, AqlClause.select), null),
                 Column(
-                    VarPath("a", "/data[at0001, 'Data']/items[at0002 and name/value='Test']/value/value", 57, 127),
+                    VarPath("a", "/data[at0001, 'Data']/items[at0002 and name/value='Test']/value/value", 57, 127, AqlClause.select),
                     "test"
                 )
             ),
@@ -160,12 +160,12 @@ order by c/context/start_time desc""".trimIndent())
 
         assertEquals(
             listOf(
-                VarPath("c", null, 12, 13),
-                VarPath("c", "/name/value", 20, 32),
-                VarPath("a", "/data/name", 39, 50),
-                VarPath("c", "/uid", 197, 202),
-                VarPath("a", "/data[at0001, 'Data']/items[at0002 and name/value='Test']/value/value", 213, 283),
-                VarPath("c", "/context/start_time", 302, 322)
+                VarPath("c", null, 12, 13, AqlClause.select),
+                VarPath("c", "/name/value", 20, 32, AqlClause.select),
+                VarPath("a", "/data/name", 39, 50, AqlClause.select),
+                VarPath("c", "/uid", 197, 202, AqlClause.where),
+                VarPath("a", "/data[at0001, 'Data']/items[at0002 and name/value='Test']/value/value", 213, 283, AqlClause.where),
+                VarPath("c", "/context/start_time", 302, 322, AqlClause.order)
 
             ), info.varPaths
         )

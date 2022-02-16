@@ -1,5 +1,8 @@
 package care.better.tools.aqlidea.plugin.editor
 
+import care.better.tools.aqlidea.aql.CustomAqlLexer
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.json.JsonElementTypes
 import com.intellij.lang.ASTFactory
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
@@ -17,31 +20,31 @@ import com.intellij.psi.util.PsiUtilCore
 
 class AqlTextParserDefinition : ParserDefinition {
     override fun createLexer(project: Project): Lexer {
-        return EmptyLexer()
+        return CustomAqlLexer()
     }
 
     override fun createParser(project: Project): PsiParser {
-        throw UnsupportedOperationException("Not supported")
+        return  AqlSimpleParser()
     }
 
     override fun getFileNodeType(): IFileElementType {
-        return AQL_FILE_ELEMENT_TYPE
+        return AqlTextTokenTypes.AQL_FILE
     }
 
     override fun getWhitespaceTokens(): TokenSet {
-        return TokenSet.EMPTY
+        return TokenSet.WHITE_SPACE
     }
 
     override fun getCommentTokens(): TokenSet {
-        return TokenSet.EMPTY
+        return TokenSet.create(AqlTextTokenTypes.AQL_COMMENT)
     }
 
     override fun getStringLiteralElements(): TokenSet {
-        return TokenSet.EMPTY
+        return TokenSet.create(AqlTextTokenTypes.AQL_STRING)
     }
 
     override fun createElement(node: ASTNode): PsiElement {
-        return PsiUtilCore.NULL_PSI_ELEMENT
+        return ASTWrapperPsiElement(node)
     }
 
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
@@ -52,13 +55,4 @@ class AqlTextParserDefinition : ParserDefinition {
         return SpaceRequirements.MAY
     }
 
-    companion object {
-        private val AQL_FILE_ELEMENT_TYPE: IFileElementType =
-            object : IFileElementType(AqlFileType.INSTANCE.language) {
-                override fun parseContents(chameleon: ASTNode): ASTNode {
-                    val chars = chameleon.chars
-                    return ASTFactory.leaf(AqlTextTokenTypes.AQL_TEXT, chars)
-                }
-            }
-    }
 }

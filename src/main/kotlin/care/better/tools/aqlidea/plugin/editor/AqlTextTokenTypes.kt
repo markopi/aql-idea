@@ -1,17 +1,11 @@
 package care.better.tools.aqlidea.plugin.editor
 
-import com.intellij.lang.ASTFactory
-import com.intellij.lang.ASTNode
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.IFileElementType
-import org.joni.constants.internal.TokenType
 
 object AqlTextTokenTypes {
-    val AQL_FILE: IElementType = object : IFileElementType("AQL_FILE", AqlLanguage) {
-        override fun parseContents(chameleon: ASTNode): ASTNode {
-            return ASTFactory.leaf(AQL_TEXT, chameleon.chars)
-        }
-    }
+    val AQL_FILE = IFileElementType(AqlLanguage)
+
     val AQL_TEXT = AqlElementType("AQL_TEXT")
 
     val AQL_KEYWORD = AqlElementType("AQL.KEYWORD")

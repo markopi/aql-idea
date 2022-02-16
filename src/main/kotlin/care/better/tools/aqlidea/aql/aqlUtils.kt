@@ -3,6 +3,7 @@ package care.better.tools.aqlidea.aql
 import care.better.tools.aqlidea.plugin.editor.AqlTextTokenTypes
 import care.better.tools.aqlidea.plugin.editor.AqlTextTokenTypes.AQL_KEYWORD
 import care.better.tools.aqlidea.plugin.editor.AqlTextTokenTypes.AQL_RM_TYPE
+import care.better.tools.aqlidea.plugin.editor.AqlTextTokenTypes.AQL_SYMBOL
 import com.intellij.lexer.Lexer
 import com.intellij.psi.tree.IElementType
 
@@ -76,4 +77,52 @@ class LexerTokenIterator(firstToken: LexerToken?) : Iterator<LexerToken> {
 
     fun peekLast(): LexerToken = lastToken
     fun peek(): LexerToken? = nextToken
+}
+
+class LexedAqls private constructor(val parts: List<SingleLexedAql>) {
+    class SingleLexedAql(val lexed: LexedAql, val offset: Int)
+
+    companion object {
+        fun of(aql: String): LexedAqls {
+            val parts = mutableListOf<SingleLexedAql>()
+
+            val main = LexedAql.of(aql, false)
+            var lastStartSelect: LexerToken? = null
+            for (token in main.tokens) {
+                if (isStartSelectToken(token)) {
+                    if (lastStartSelect!=null) {
+                        val part = newPart(main, lastStartSelect, token.prev!!)
+                        parts+=part
+                    }
+                    lastStartSelect=token
+                }
+            }
+            if (lastStartSelect!=null) {
+                val str = main.aql.substring(lastStartSelect.start, main.tokens.last().end)
+                parts += SingleLexedAql(LexedAql.of(str, false), lastStartSelect.start)
+            }
+            return LexedAqls(parts)
+
+        }
+
+        private fun newPart(main: LexedAql, select: LexerToken,
+            last: LexerToken
+        ): SingleLexedAql {
+            var actualLast=last
+            if (actualLast.matches(AQL_SYMBOL, ";")) actualLast=actualLast.prev!!
+
+            val str = main.aql.substring(select.start, actualLast.end)
+            val part = SingleLexedAql(LexedAql.of(str, false), select.start)
+            return part
+        }
+
+        private fun isStartSelectToken(token: LexerToken): Boolean {
+            if (!token.matches(AQL_KEYWORD, "select")) return false
+            val prev = token.prev ?: return true
+            val prevPrev = prev.prev ?: return true
+            if (prevPrev.matches(AQL_KEYWORD, "union") && prev.matches(AQL_KEYWORD, "all")) return false
+            return true
+        }
+
+    }
 }
