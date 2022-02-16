@@ -31,9 +31,12 @@
         <toolWindow id="AQL" secondary="true" icon="AllIcons.General.Modified" anchor="bottom"
                     factoryClass="care.better.tools.aqlidea.plugin.toolWindow.AqlToolWindowFactory"/>
 
-        <applicationConfigurable parentId="tools" instance="care.better.tools.aqlidea.plugin.settings.AqlSettingsConfigurable"
-                                 id="care.better.tools.aqlidea.plugin.settings.AqlSettingsConfigurable"
-                                 displayName="AQL"/>
+        <projectConfigurable parentId="tools" instance="care.better.tools.aqlidea.plugin.settings.AqlSettingsConfigurable"
+                             id="care.better.tools.aqlidea.plugin.settings.AqlSettingsConfigurable" displayName="AQL"
+                             nonDefaultProject="true"/>
+<!--        <applicationConfigurable parentId="tools" instance="care.better.tools.aqlidea.plugin.settings.AqlSettingsConfigurable"-->
+<!--                                 id="care.better.tools.aqlidea.plugin.settings.AqlSettingsConfigurable"-->
+<!--                                 displayName="AQL"/>-->
 <!--        <fileEditorProvider implementation="care.better.tools.aqlidea.plugin.editor.AqlEditorProvider"/>-->
         <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.settings.AqlSettingsState"/>
         <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.service.ThinkEhrClientService"/>
