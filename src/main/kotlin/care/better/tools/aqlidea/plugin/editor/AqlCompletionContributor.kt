@@ -1,6 +1,7 @@
 package care.better.tools.aqlidea.plugin.editor
 
 import care.better.tools.aqlidea.aql.LexedAql
+import care.better.tools.aqlidea.aql.LexedAqls
 import care.better.tools.aqlidea.aql.autocomplete.AqlAutocompletion
 import care.better.tools.aqlidea.aql.autocomplete.AqlKeywordAutocompletionProvider
 import care.better.tools.aqlidea.aql.autocomplete.AqlServerAutocompletionProvider
@@ -12,13 +13,14 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns
+import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.ProcessingContext
 
 
 class AqlCompletionContributor : CompletionContributor() {
     init {
         extend(
-            CompletionType.BASIC, PlatformPatterns.psiElement(AqlTextTokenTypes.AQL_TEXT),
+            CompletionType.BASIC, PlatformPatterns.psiElement(),
             AqlCompletionProvider
         )
     }
@@ -31,15 +33,21 @@ class AqlCompletionContributor : CompletionContributor() {
             context: ProcessingContext,
             resultSet: CompletionResultSet
         ) {
-            val aql = parameters.originalPosition!!.text
-            val offset = parameters.offset
+            if (parameters.originalFile.language != AqlLanguage) return
+            val originalPosition = parameters.originalPosition ?: return
+
+            val lexedAqls = LexedAqls.of(parameters.originalFile.text)
+            val lexedAql = lexedAqls.parts.lastOrNull { it.offset <= originalPosition.startOffset } ?: return
+
+            val aql = lexedAql.lexed.aql
+            val aqlStartOffset = lexedAql.offset
+            val offset = parameters.offset - aqlStartOffset
             val autocompletions = getAutocompletions(aql, offset, parameters.editor.project)
             if (autocompletions.isEmpty()) return
             val first = autocompletions.first()
-            val prefix = parameters.editor.document.getText(TextRange(first.start, first.end))
+            val prefix = parameters.editor.document.getText(TextRange(aqlStartOffset+first.start, aqlStartOffset+first.end))
             val originalText = parameters.editor.document.text
 
-            // todo
             val rs = resultSet.withPrefixMatcher(resultSet.prefixMatcher.cloneWithPrefix(prefix))
 
             for (ac in autocompletions) {
@@ -47,7 +55,7 @@ class AqlCompletionContributor : CompletionContributor() {
                     is AqlAutocompletion.Keyword -> {
                         rs.addElement(
                             LookupElementBuilder.create(ac.completion)
-                                .withInsertHandler(AqlInsertHandler(originalText, 0, ac))
+                                .withInsertHandler(AqlInsertHandler(originalText, aqlStartOffset, ac))
                         )
                     }
                     is AqlAutocompletion.Archetype -> {
@@ -55,7 +63,7 @@ class AqlCompletionContributor : CompletionContributor() {
                             LookupElementBuilder.create(ac.completion)
                                 .withPresentableText(ac.archetypeId)
                                 .withTailText(ac.name)
-                                .withInsertHandler(AqlInsertHandler(originalText, 0, ac))
+                                .withInsertHandler(AqlInsertHandler(originalText, aqlStartOffset, ac))
                         )
                     }
                     is AqlAutocompletion.Path -> {
@@ -64,7 +72,7 @@ class AqlCompletionContributor : CompletionContributor() {
                             .withTypeText(ac.type)
                             .withTailText(ac.name)
                             .withLookupString(ac.path + " " + (ac.name ?: ""))
-                            .withInsertHandler(AqlInsertHandler(originalText, 0, ac))
+                            .withInsertHandler(AqlInsertHandler(originalText, aqlStartOffset, ac))
 
                         rs.addElement(e)
                     }

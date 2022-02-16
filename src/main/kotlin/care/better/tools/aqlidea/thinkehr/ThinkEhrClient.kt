@@ -25,7 +25,7 @@ interface ThinkEhrClient {
     fun listArchetypeInfos(target: ThinkEhrTarget): List<ThinkEhrArchetypeInfo>
     fun getArchetypeDetails(target: ThinkEhrTarget, archetypeId: String): ThinkEhrArchetypeDetails
 
-    class QueryResponse(val rawRequest: String, val rawResponse: String, val response: ThinkEhrQueryResponse)
+    class QueryResponse(val rawRequest: String, val rawResponse: String, val response: ThinkEhrQueryResponse?)
 
 }
 
@@ -61,8 +61,8 @@ class CachingThinkEhrClient(private val delegate: ThinkEhrClient) : ThinkEhrClie
     }
 
 
-    private class ListArchetypeInfosKey(val target: ThinkEhrTarget)
-    private class ArchetypeDetailsKey(val target: ThinkEhrTarget, val archetypeId: String)
+    private data class ListArchetypeInfosKey(val target: ThinkEhrTarget)
+    private data class ArchetypeDetailsKey(val target: ThinkEhrTarget, val archetypeId: String)
 }
 
 class ThinkEhrClientImpl : ThinkEhrClient {
@@ -85,9 +85,13 @@ class ThinkEhrClientImpl : ThinkEhrClient {
             .timeout(timeout)
             .build()
         val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        ensureSuccess(response, url)
+//        ensureSuccess(response, url)
         val rawResponseBody = response.body()
-        val parsedResponse =  objectMapper.readValue(rawResponseBody, ThinkEhrQueryResponse::class.java)
+        val parsedResponse = if (response.statusCode() == 200) {
+            objectMapper.readValue(rawResponseBody, ThinkEhrQueryResponse::class.java)
+        } else {
+            null
+        }
         return ThinkEhrClient.QueryResponse(requestBody, rawResponseBody, parsedResponse)
     }
 

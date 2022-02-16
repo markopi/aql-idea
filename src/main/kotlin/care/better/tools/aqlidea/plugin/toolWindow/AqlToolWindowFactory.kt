@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
-import javax.swing.JTable
 import javax.swing.table.DefaultTableModel
 
 class AqlToolWindowFactory: ToolWindowFactory {
@@ -29,21 +28,26 @@ class AqlToolWindowFactory: ToolWindowFactory {
 
         fun updateTableValues(response: ThinkEhrClient.QueryResponse) {
             val model = DefaultTableModel()
+            if (response.response != null) {
+                response.response.resultSet.firstOrNull()
+                    ?.keys
+                    ?.forEach {
+                        model.addColumn(it)
+                    }
 
-            response.response.resultSet.firstOrNull()
-                ?.keys
-                ?.forEach {
-                    model.addColumn(it)
+                for (row in response.response.resultSet) {
+                    model.addRow(row.values.toTypedArray())
                 }
 
-            for (row in response.response.resultSet) {
-                model.addRow(row.values.toTypedArray())
+                aqlToolWindow.showQueryTab(AqlToolWindow.QueryTab.table)
+            } else {
+                aqlToolWindow.showQueryTab(AqlToolWindow.QueryTab.response)
+
             }
 
             aqlToolWindow.setRawRequest(response.rawRequest)
             aqlToolWindow.setRawResponse(response.rawResponse)
             aqlToolWindow.setTableModel(model)
-            aqlToolWindow.showTableTab()
         }
     }
 }
