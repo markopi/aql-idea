@@ -21,9 +21,6 @@
                            implementationClass="care.better.tools.aqlidea.plugin.editor.AqlSyntaxHighlighter"/>
 
 
-        <configurationType implementation="care.better.tools.aqlidea.plugin.runner.AqlRunConfigurationType"/>
-        <programRunner implementation="care.better.tools.aqlidea.plugin.runner.AqlQueryRunner"/>
-        <runConfigurationProducer implementation="care.better.tools.aqlidea.plugin.runner.AqlRunConfigurationProducer"/>
         <runLineMarkerContributor language="AQL" implementationClass="care.better.tools.aqlidea.plugin.runner.AqlRunLineMarkerProvider"/>
 
         <notificationGroup id="AQL" displayType="BALLOON" key="notification.group.name"/>
@@ -38,8 +35,8 @@
 <!--                                 id="care.better.tools.aqlidea.plugin.settings.AqlSettingsConfigurable"-->
 <!--                                 displayName="AQL"/>-->
 <!--        <fileEditorProvider implementation="care.better.tools.aqlidea.plugin.editor.AqlEditorProvider"/>-->
-        <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.settings.AqlSettingsState"/>
         <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.service.ThinkEhrClientService"/>
+        <projectService serviceImplementation="care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState"/>
     </extensions>
 
 

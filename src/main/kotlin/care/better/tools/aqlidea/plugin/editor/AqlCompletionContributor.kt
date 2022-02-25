@@ -87,7 +87,7 @@ class AqlCompletionContributor : CompletionContributor() {
             val lexedAql = LexedAql.of(aql, whitespaceAware = false)
             val result = mutableListOf<AqlAutocompletion>()
             val thinkEhr = ApplicationManager.getApplication().getService(ThinkEhrClientService::class.java)
-            val server = thinkEhr.getTarget(project)
+            val server = project?.let { thinkEhr.getTarget(it) }
             if (server != null) {
                 result += AqlServerAutocompletionProvider(thinkEhr.client)
                     .getAutocompletions(lexedAql, cursorOffset, server)

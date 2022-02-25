@@ -33,19 +33,16 @@ class AqlRunLineMarkerProvider : RunLineMarkerContributor() {
     class RunAqlAction(val fileContents: String, val offset: Int) : AnAction("Run AQL Query", "Run AQL query on configured server", AllIcons.RunConfigurations.TestState.Run) {
 
         override fun actionPerformed(event: AnActionEvent) {
+            val project = event.project ?: return
             try {
                 val lexedAqls = LexedAqls.of(fileContents)
                 val partToRun = lexedAqls.parts.first { it.offset>=offset }
                 val aql = partToRun.lexed.aql
-                val thinkehr = ApplicationManager.getApplication().getService(ThinkEhrClientService::class.java)
-                val target = thinkehr.getTarget(event.project) ?: return
+                val thinkehr = ThinkEhrClientService.INSTANCE
+                val target = thinkehr.getTarget(project) ?: return
 
                 val r = thinkehr.client.query(target, aql)
-                val toolWindow = ToolWindowManager.getInstance(event.project!!).getToolWindow("AQL")!!
-                toolWindow.activate {
-                    AqlToolWindowFactory.updateTableValues(r)
-                }
-
+                AqlToolWindowFactory.showQueryResult(event.project!!, r)
             } catch (e: Exception) {
                 if (e !is AqlPluginException) {
                     log.error("Error calling ThinkEhr Server", e)

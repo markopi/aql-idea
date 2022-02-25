@@ -85,7 +85,7 @@ class ThinkEhrClientImpl : ThinkEhrClient {
             .timeout(timeout)
             .build()
         val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-//        ensureSuccess(response, url)
+        ensureSuccess(response, url)
         val rawResponseBody = response.body()
         val parsedResponse = if (response.statusCode() == 200) {
             objectMapper.readValue(rawResponseBody, ThinkEhrQueryResponse::class.java)
@@ -96,10 +96,10 @@ class ThinkEhrClientImpl : ThinkEhrClient {
     }
 
     private fun ensureSuccess(response: HttpResponse<String>, url: String) {
-        if (response.statusCode() != 200) {
+        if (response.statusCode() !in 200..299) {
             log.error("Ehr url $url returned error response code [${response.statusCode()}]: ${response.body()}")
-            val errorMessage = extractServerErrorMessage(response) ?: response.body()
-            throw AqlPluginException("ThinkEhrServer [${response.statusCode()}]: $errorMessage")
+            val errorMessage = (extractServerErrorMessage(response) ?: "").take(160)
+            throw AqlPluginException("ThinkEhrServer [response code ${response.statusCode()}]: $errorMessage")
         }
     }
 
@@ -142,7 +142,7 @@ class ThinkEhrClientImpl : ThinkEhrClient {
         return try {
             val map = objectMapper.readValue(body, Map::class.java)
             map["message"] as? String?
-        } catch (e: JsonMappingException) {
+        } catch (e: Exception) {
             null
         }
     }
