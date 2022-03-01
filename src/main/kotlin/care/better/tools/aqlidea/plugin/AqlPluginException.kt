@@ -1,3 +1,3 @@
 package care.better.tools.aqlidea.plugin
 
-class AqlPluginException(message: String): RuntimeException(message)
+open class AqlPluginException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)

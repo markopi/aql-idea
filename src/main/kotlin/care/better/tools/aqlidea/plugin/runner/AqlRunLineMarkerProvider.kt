@@ -12,12 +12,9 @@ import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.psi.util.elementType
 
 class AqlRunLineMarkerProvider : RunLineMarkerContributor() {
 
@@ -36,13 +33,18 @@ class AqlRunLineMarkerProvider : RunLineMarkerContributor() {
             val project = event.project ?: return
             try {
                 val lexedAqls = LexedAqls.of(fileContents)
-                val partToRun = lexedAqls.parts.first { it.offset>=offset }
+                val partToRun = lexedAqls.parts.first { it.offset >= offset }
                 val aql = partToRun.lexed.aql
                 val thinkehr = ThinkEhrClientService.INSTANCE
                 val target = thinkehr.getTarget(project) ?: return
 
-                val r = thinkehr.client.query(target, aql)
-                AqlToolWindowFactory.showQueryResult(event.project!!, r)
+                AqlToolWindowFactory.showQueryStart(project)
+                try {
+                    val r = thinkehr.client.query(target, aql)
+                    AqlToolWindowFactory.showQueryResult(project, r)
+                } catch (e: Exception) {
+                    AqlToolWindowFactory.showQueryError(project, e)
+                }
             } catch (e: Exception) {
                 if (e !is AqlPluginException) {
                     log.error("Error calling ThinkEhr Server", e)

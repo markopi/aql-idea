@@ -27,8 +27,8 @@ repositories {
     maven {
         url = uri("https://artifactory.better.care/artifactory/thinkehr-remote")
         credentials {
-            username = "markopi"
-            password = "kresnicka"
+            username = properties("maven.repository.better.username")
+            password = properties("maven.repository.better.password")
         }
     }
 }

@@ -81,15 +81,19 @@ class AqlServerAutocompletionProvider(private val client: ThinkEhrClient) {
     private fun getReferencedVar(aqlInfo: AqlInfo, varName: String): Pair<FromVar?, String> {
         var pathPrefix = ""
         var curVar = aqlInfo.vars[varName]
+        val loopedVarNames = mutableSetOf<String>()
         while (true) {
+            if (curVar?.name in loopedVarNames) curVar = null
+
             when (curVar) {
                 null -> return null to ""
                 is FromVar -> return curVar to pathPrefix
                 is SelectVar -> {
                     pathPrefix = curVar.column.varPath.path.orEmpty() + pathPrefix
-                    curVar = aqlInfo.vars[curVar.name]
+                    curVar = aqlInfo.vars[curVar.column.varPath.varName]
                 }
             }.run { }
+            curVar?.let { loopedVarNames += it.name }
         }
     }
 

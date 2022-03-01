@@ -2,7 +2,6 @@ package care.better.tools.aqlidea.thinkehr
 
 import care.better.tools.aqlidea.plugin.AqlPluginException
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.cache.Cache
@@ -25,7 +24,31 @@ interface ThinkEhrClient {
     fun listArchetypeInfos(target: ThinkEhrTarget): List<ThinkEhrArchetypeInfo>
     fun getArchetypeDetails(target: ThinkEhrTarget, archetypeId: String): ThinkEhrArchetypeDetails
 
-    class QueryResponse(val rawRequest: String, val rawResponse: String, val response: ThinkEhrQueryResponse?)
+    class QueryResponse(
+        val rawRequest: Request,
+        val rawResponse: Response,
+        val response: ThinkEhrQueryResponse?
+    )
+
+    data class Request(val url: String, val body: String?)
+    data class Response(val code: Int, val body: String?)
+
+    sealed class ThinkEhrAqlException(
+        message: String,
+        val request: Request,
+        val response: Response?,
+        cause: Throwable? = null
+    ) :
+        AqlPluginException(message, cause)
+
+    class ThinkEhrBadResponseException(message: String, request: Request, response: Response) :
+        ThinkEhrAqlException(message, request, response)
+
+    class ThinkEhrCallException(message: String, request: Request, cause: Throwable) :
+        ThinkEhrAqlException(message, request, null, cause)
+
+    class ThinkEhrParseException(message: String, request: Request, response: Response, cause: Throwable) :
+        ThinkEhrAqlException(message, request, response, cause)
 
 }
 
@@ -78,30 +101,24 @@ class ThinkEhrClientImpl : ThinkEhrClient {
     override fun query(target: ThinkEhrTarget, aql: String): ThinkEhrClient.QueryResponse {
         val url = target.url + "/rest/v1/query"
         val requestBody = buildRequestBodyString(aql)
+        val req = ThinkEhrClient.Request(url, requestBody)
         val request = HttpRequest.newBuilder(URI.create(url))
             .POST(HttpRequest.BodyPublishers.ofString(requestBody))
             .header("Authorization", buildAuthorizationHeader(target))
             .header("Content-Type", "application/json")
             .timeout(timeout)
             .build()
-        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        ensureSuccess(response, url)
-        val rawResponseBody = response.body()
+        val (resp, response) = sendRequest(req, request)
+        ensureSuccess(req, resp)
+
         val parsedResponse = if (response.statusCode() == 200) {
-            objectMapper.readValue(rawResponseBody, ThinkEhrQueryResponse::class.java)
+            parseResponse(req, resp, ThinkEhrQueryResponse::class.java)
         } else {
             null
         }
-        return ThinkEhrClient.QueryResponse(requestBody, rawResponseBody, parsedResponse)
+        return ThinkEhrClient.QueryResponse(req, resp, parsedResponse)
     }
 
-    private fun ensureSuccess(response: HttpResponse<String>, url: String) {
-        if (response.statusCode() !in 200..299) {
-            log.error("Ehr url $url returned error response code [${response.statusCode()}]: ${response.body()}")
-            val errorMessage = (extractServerErrorMessage(response) ?: "").take(160)
-            throw AqlPluginException("ThinkEhrServer [response code ${response.statusCode()}]: $errorMessage")
-        }
-    }
 
     override fun listArchetypeInfos(target: ThinkEhrTarget): List<ThinkEhrArchetypeInfo> {
         val url = target.url + "/rest/v1/archetype/flat"
@@ -112,12 +129,13 @@ class ThinkEhrClientImpl : ThinkEhrClient {
             .timeout(timeout)
             .build()
 
-        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        ensureSuccess(response, url)
+        val req = ThinkEhrClient.Request(url, null)
+        val (resp, response) = sendRequest(req, request)
+        ensureSuccess(req, resp)
 
-        val type = objectMapper.typeFactory.constructCollectionType(List::class.java, ThinkEhrArchetypeInfo::class.java)
-        return objectMapper.readValue(response.body(), type)
+        return parseListResponse(req, resp, ThinkEhrArchetypeInfo::class.java)
     }
+
 
     override fun getArchetypeDetails(target: ThinkEhrTarget, archetypeId: String): ThinkEhrArchetypeDetails {
         val url = target.url + "/rest/v1/archetype/flat/${encode(archetypeId)}"
@@ -128,23 +146,10 @@ class ThinkEhrClientImpl : ThinkEhrClient {
             .timeout(timeout)
             .build()
 
-        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        ensureSuccess(response, url)
-
-        return objectMapper.readValue(response.body(), ThinkEhrArchetypeDetails::class.java)
-    }
-
-    private fun encode(value: String): String = URLEncoder.encode(value, StandardCharsets.UTF_8)
-
-    private fun extractServerErrorMessage(response: HttpResponse<String>): String? {
-        val body = response.body().trim()
-        if (body.isEmpty()) return null
-        return try {
-            val map = objectMapper.readValue(body, Map::class.java)
-            map["message"] as? String?
-        } catch (e: Exception) {
-            null
-        }
+        val req = ThinkEhrClient.Request(url, null)
+        val (resp, response) = sendRequest(req, request)
+        ensureSuccess(req, resp)
+        return parseResponse(req, resp, ThinkEhrArchetypeDetails::class.java)
     }
 
 
@@ -157,4 +162,66 @@ class ThinkEhrClientImpl : ThinkEhrClient {
         request["aql"] = aql
         return objectMapper.writeValueAsString(request)
     }
+
+    private fun ensureSuccess(request: ThinkEhrClient.Request, response: ThinkEhrClient.Response) {
+        if (response.code !in 200..299) {
+//            log.error("Ehr url ${request.url} returned error response code [${response.code}]: ${response.body}")
+            val errorMessage = (extractServerErrorMessage(response.body) ?: "").take(160)
+            throw ThinkEhrClient.ThinkEhrBadResponseException(
+                "ThinkEhrServer [response code ${response.code}]: $errorMessage",
+                request, response
+            )
+        }
+    }
+
+    private fun sendRequest(
+        r: ThinkEhrClient.Request,
+        request: HttpRequest
+    ): Pair<ThinkEhrClient.Response, HttpResponse<String>> {
+        val response = try {
+            httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+        } catch (e: Exception) {
+            throw ThinkEhrClient.ThinkEhrCallException(e.toString(), r, e)
+        }
+        val resp = ThinkEhrClient.Response(response.statusCode(), response.body())
+        return resp to response
+    }
+
+    private fun encode(value: String): String = URLEncoder.encode(value, StandardCharsets.UTF_8)
+
+    private fun extractServerErrorMessage(responseBody: String?): String? {
+        val body = responseBody?.trim() ?: return null
+        if (body.isEmpty()) return null
+        return try {
+            val map = objectMapper.readValue(body, Map::class.java)
+            map["message"] as? String?
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun <T> parseListResponse(
+        req: ThinkEhrClient.Request,
+        resp: ThinkEhrClient.Response,
+        itemType: Class<T>
+    ): List<T> {
+        val type = objectMapper.typeFactory.constructCollectionType(List::class.java, ThinkEhrArchetypeInfo::class.java)
+        return try {
+            objectMapper.readValue(resp.body, type) as List<T>
+        } catch (e: Exception) {
+            throw ThinkEhrClient.ThinkEhrParseException(e.toString(), req, resp, e)
+        }
+    }
+
+    private fun <T> parseResponse(
+        req: ThinkEhrClient.Request,
+        resp: ThinkEhrClient.Response,
+        type: Class<T>
+    ): T = try {
+        objectMapper.readValue(resp.body, type)
+    } catch (e: Exception) {
+        throw ThinkEhrClient.ThinkEhrParseException(e.toString(), req, resp, e)
+    }
+
+
 }
