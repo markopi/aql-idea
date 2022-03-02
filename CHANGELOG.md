@@ -2,7 +2,11 @@
 
 # adl-idea Changelog
 
+<!--
 ## [Unreleased]
+-->
+
+## 0.0.2
 ### Added
 - Multiple servers
 - raw request / response log
