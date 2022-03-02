@@ -32,12 +32,12 @@ AQL support for Idea.
 ### Define ehr servers
 
 - Open AQL tool window. 
-- In Data Sources tab, click configure button. 
-- Add one or more servers by clicking + button and configuring server properties. 
+- In Servers tab, click Configure button. 
+- Add one or more servers by clicking + button and configure server properties. 
   Test button will test the configuration by making a test request to the current server
-- Ok to save the server configuration
+- Click Ok to save the server configuration
 
-Servers will now be listed in the AQL Servers tab. To choose the currently active server, double-click on it. 
+Servers will now be listed in the Servers tab inside the AQL tool window. To choose the currently active server, double-click on it. 
 Currently active server has an icon next to it.
 
 ### Aql editing
