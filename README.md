@@ -9,8 +9,8 @@ AQL support for Idea.
 <!-- Plugin description end -->
 
 ## TODO
-* Data Sources (project/global?)
-* Execution log history (query/response)
+* Data Sources (global)
+* Script files under DataSource
 * Autocomplete
 * Publish/move to better-care github?
 * Tree view

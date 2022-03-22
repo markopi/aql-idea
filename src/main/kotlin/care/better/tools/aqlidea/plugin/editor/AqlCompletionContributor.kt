@@ -44,22 +44,18 @@ class AqlCompletionContributor : CompletionContributor() {
             val offset = parameters.offset - aqlStartOffset
             val autocompletions = getAutocompletions(aql, offset, parameters.editor.project)
             if (autocompletions.isEmpty()) return
-            val first = autocompletions.first()
-            val prefix = parameters.editor.document.getText(TextRange(aqlStartOffset+first.start, aqlStartOffset+first.end))
             val originalText = parameters.editor.document.text
-
-            val rs = resultSet.withPrefixMatcher(resultSet.prefixMatcher.cloneWithPrefix(prefix))
 
             for (ac in autocompletions) {
                 when (ac) {
                     is AqlAutocompletion.Keyword -> {
-                        rs.addElement(
+                        resultSet.addElement(
                             LookupElementBuilder.create(ac.completion)
-                                .withInsertHandler(AqlInsertHandler(originalText, aqlStartOffset, ac))
+//                                .withInsertHandler(AqlInsertHandler(originalText, aqlStartOffset, ac))
                         )
                     }
                     is AqlAutocompletion.Archetype -> {
-                        rs.addElement(
+                        resultSet.addElement(
                             LookupElementBuilder.create(ac.completion)
                                 .withPresentableText(ac.archetypeId)
                                 .withTailText(ac.name)
@@ -74,7 +70,7 @@ class AqlCompletionContributor : CompletionContributor() {
                             .withLookupString(ac.path + " " + (ac.name ?: ""))
                             .withInsertHandler(AqlInsertHandler(originalText, aqlStartOffset, ac))
 
-                        rs.addElement(e)
+                        resultSet.addElement(e)
                     }
                 }.run { }
             }
