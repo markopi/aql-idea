@@ -20,7 +20,6 @@
         <syntaxHighlighter key="AQL"
                            implementationClass="care.better.tools.aqlidea.plugin.editor.AqlSyntaxHighlighter"/>
 
-
         <runLineMarkerContributor language="AQL" implementationClass="care.better.tools.aqlidea.plugin.runner.AqlRunLineMarkerProvider"/>
 
         <notificationGroup id="AQL" displayType="BALLOON" key="notification.group.name"/>
@@ -28,8 +27,13 @@
         <toolWindow id="AQL" secondary="true" icon="AllIcons.General.Modified" anchor="bottom"
                     factoryClass="care.better.tools.aqlidea.plugin.toolWindow.AqlToolWindowFactory"/>
 
+<!--        <nonProjectFileWritingAccessExtension implementation="care.better.tools.aqlidea.plugin.settings.AqlConsoleWriteUnlocker" order="first"/>-->
+
         <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.service.ThinkEhrClientService"/>
-        <projectService serviceImplementation="care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState"/>
+        <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState"/>
+
+        <scratch.rootType implementation="care.better.tools.aqlidea.plugin.console.AqlRootType"/>
+
     </extensions>
 
 

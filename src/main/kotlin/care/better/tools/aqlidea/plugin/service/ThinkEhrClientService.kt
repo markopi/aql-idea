@@ -1,6 +1,7 @@
 package care.better.tools.aqlidea.plugin.service
 
 import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
+import care.better.tools.aqlidea.plugin.toolWindow.AqlServer
 import care.better.tools.aqlidea.thinkehr.CachingThinkEhrClient
 import care.better.tools.aqlidea.thinkehr.ThinkEhrClient
 import care.better.tools.aqlidea.thinkehr.ThinkEhrClientImpl
@@ -14,8 +15,9 @@ import com.intellij.openapi.project.Project
 class ThinkEhrClientService {
     val client: ThinkEhrClient
 
+    @Deprecated("Replaced with toThinkEhrTarget")
     fun getTarget(project: Project): ThinkEhrTarget? {
-        val settings = AqlServersPersistentState.getService(project)
+        val settings = AqlServersPersistentState.getService()
         val state = settings.readState()
         val defaultServer = state.defaultServer()
         if (defaultServer == null ) {
@@ -28,10 +30,14 @@ class ThinkEhrClientService {
             Notifications.Bus.notify(n, project)
             return null
         }
+        return toThinkEhrTarget(defaultServer)
+    }
+
+    fun toThinkEhrTarget(server: AqlServer): ThinkEhrTarget {
         return ThinkEhrTarget(
-            url = defaultServer.serverUrl,
-            username = defaultServer.username,
-            password = defaultServer.password
+            url = server.serverUrl,
+            username = server.username,
+            password = server.password
         )
     }
 

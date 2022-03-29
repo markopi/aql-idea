@@ -5,13 +5,14 @@ import care.better.tools.aqlidea.aql.LexedAqls
 import care.better.tools.aqlidea.aql.autocomplete.AqlAutocompletion
 import care.better.tools.aqlidea.aql.autocomplete.AqlKeywordAutocompletionProvider
 import care.better.tools.aqlidea.aql.autocomplete.AqlServerAutocompletionProvider
+import care.better.tools.aqlidea.plugin.AqlUtils
 import care.better.tools.aqlidea.plugin.service.ThinkEhrClientService
+import care.better.tools.aqlidea.plugin.toolWindow.AqlServer
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.ProcessingContext
@@ -33,8 +34,10 @@ class AqlCompletionContributor : CompletionContributor() {
             context: ProcessingContext,
             resultSet: CompletionResultSet
         ) {
+
             if (parameters.originalFile.language != AqlLanguage) return
             val originalPosition = parameters.originalPosition ?: return
+            val aqlServer = AqlUtils.aqlServerForFile(parameters.originalFile.virtualFile)
 
             val lexedAqls = LexedAqls.of(parameters.originalFile.text)
             val lexedAql = lexedAqls.parts.lastOrNull { it.offset <= originalPosition.startOffset } ?: return
@@ -42,7 +45,7 @@ class AqlCompletionContributor : CompletionContributor() {
             val aql = lexedAql.lexed.aql
             val aqlStartOffset = lexedAql.offset
             val offset = parameters.offset - aqlStartOffset
-            val autocompletions = getAutocompletions(aql, offset, parameters.editor.project)
+            val autocompletions = getAutocompletions(aqlServer, aql, offset, parameters.editor.project)
             if (autocompletions.isEmpty()) return
             val originalText = parameters.editor.document.text
 
@@ -75,18 +78,16 @@ class AqlCompletionContributor : CompletionContributor() {
                 }.run { }
             }
 
-
         }
 
-
-        fun getAutocompletions(aql: String, cursorOffset: Int, project: Project?): List<AqlAutocompletion> {
+        fun getAutocompletions(aqlServer: AqlServer?, aql: String, cursorOffset: Int, project: Project?): List<AqlAutocompletion> {
             val lexedAql = LexedAql.of(aql, whitespaceAware = false)
             val result = mutableListOf<AqlAutocompletion>()
             val thinkEhr = ApplicationManager.getApplication().getService(ThinkEhrClientService::class.java)
-            val server = project?.let { thinkEhr.getTarget(it) }
-            if (server != null) {
+            if (aqlServer!=null) {
+                val target = thinkEhr.toThinkEhrTarget(aqlServer)
                 result += AqlServerAutocompletionProvider(thinkEhr.client)
-                    .getAutocompletions(lexedAql, cursorOffset, server)
+                    .getAutocompletions(lexedAql, cursorOffset, target)
             }
             if (result.isEmpty()) {
                 result += AqlKeywordAutocompletionProvider.getAutocompletions(lexedAql, cursorOffset)
@@ -97,7 +98,6 @@ class AqlCompletionContributor : CompletionContributor() {
 
     }
 
-    // todo custom completion
     private class AqlInsertHandler(val originalText: String, val anchorOffset: Int, val ac: AqlAutocompletion) : InsertHandler<LookupElement> {
         override fun handleInsert(context: InsertionContext, item: LookupElement) {
             // remove the text already inserted by idea

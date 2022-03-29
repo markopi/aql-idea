@@ -1,10 +1,16 @@
 package care.better.tools.aqlidea.plugin.toolWindow
 
+import care.better.tools.aqlidea.plugin.AqlUtils
+import care.better.tools.aqlidea.plugin.console.AqlRootType
 import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
+import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.icons.AllIcons
+import com.intellij.ide.scratch.ScratchFileService
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Splitter
+import com.intellij.openapi.util.Key
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBList
 import com.intellij.ui.components.JBScrollPane
@@ -17,6 +23,7 @@ import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.ListCellRenderer
 
+
 @Suppress("UNCHECKED_CAST")
 class AqlServersPanel(private val project: Project) : JPanel() {
 
@@ -24,7 +31,7 @@ class AqlServersPanel(private val project: Project) : JPanel() {
         createGui()
     }
 
-    private val stateService = AqlServersPersistentState.getService(project)
+    private val stateService = AqlServersPersistentState.getService()
 
     private lateinit var currentModel: AqlServersConfiguration
 
@@ -47,12 +54,10 @@ class AqlServersPanel(private val project: Project) : JPanel() {
                 if (e.clickCount == 2) {
 //                    val clickIndex = dataSourcesList.locationToIndex(e.point)
                     val listIndex = dataSourcesList.selectedIndex
-                    if (listIndex >= 0) {
-                        currentModel.servers.forEachIndexed { modelIndex, aqlServer ->
-                            aqlServer.default = modelIndex == listIndex
-                        }
-                        stateService.writeState(currentModel)
-                        dataSourcesList.repaint()
+                    if (listIndex in 0 until currentModel.servers.size) {
+                        val aqlServer = currentModel.servers[listIndex]
+                        openServerConsole(aqlServer)
+
 //                        populateDataSourcesList(currentModel)
                     }
                 }
@@ -65,6 +70,39 @@ class AqlServersPanel(private val project: Project) : JPanel() {
         splitPanel.secondComponent = JPanel()
         add(splitPanel, BorderLayout.CENTER)
     }
+
+    private fun openServerConsole(server: AqlServer) {
+
+        val contentFile = ConsoleHistoryController.getContentFile(
+            AqlRootType.INSTANCE,
+            server.id,
+            ScratchFileService.Option.create_if_missing
+        )!!
+        contentFile.putUserData(AqlUtils.KEY_AQL_SERVER_ID, server.id)
+
+        FileEditorManager.getInstance(project).openFile(contentFile, true)
+
+    }
+//    private fun openServerConsole(server: AqlServer) {
+//        val pluginConfFile = AqlPluginHomeDir.getConsoleFile(server)
+//        val virtualFile = VfsUtil.findFileByIoFile(pluginConfFile.toFile(), true)
+//            ?: return
+//
+////        val document = FileDocumentManager.getInstance().getDocument(virtualFile) ?: return
+//        val editor = FileEditorManager.getInstance(project).openTextEditor(
+//            OpenFileDescriptor(
+//                project, virtualFile, 0
+//            ),
+//            true // request focus to editor
+//        )!!
+//
+////        CommandProcessor.getInstance().executeCommand(project,  {
+////
+////
+////        },
+////        "Open AQL Server Console", null)
+//
+//    }
 
 
     fun activate() {
@@ -80,7 +118,7 @@ class AqlServersPanel(private val project: Project) : JPanel() {
     private fun createActionToolbar(): ActionToolbar {
         val action = object : AnAction("Configure", "Configure data sources", AllIcons.General.Settings) {
             override fun actionPerformed(e: AnActionEvent) {
-                val stateService = AqlServersPersistentState.getService(e.project!!)
+                val stateService = AqlServersPersistentState.getService()
                 val model = stateService.readState()
 
                 val dialog = AqlEditDataSourcesDialog(e.project!!, model)
@@ -113,11 +151,11 @@ class AqlServersPanel(private val project: Project) : JPanel() {
             cellHasFocus: Boolean
         ): Component {
             text = value.name
-            if (value.default) {
-                icon = AllIcons.Actions.Run_anything
-            } else {
-                icon = null
-            }
+//            if (value.default) {
+//                icon = AllIcons.Actions.Run_anything
+//            } else {
+//                icon = null
+//            }
 
             if (isSelected) {
                 background = list.selectionBackground

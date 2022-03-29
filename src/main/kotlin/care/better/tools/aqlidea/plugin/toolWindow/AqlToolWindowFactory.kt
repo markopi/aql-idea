@@ -33,9 +33,6 @@ class AqlToolWindowFactory: ToolWindowFactory {
         const val TOOL_WINDOW_ID = "AQL"
 
         private val log: Logger = Logger.getInstance(AqlToolWindowFactory::class.java)
-        // todo remove from companion object
-//        private lateinit var aqlToolWindow: AqlToolWindow
-
 
         fun showQueryStart(project: Project) {
             val toolWindow = getToolWindow(project)

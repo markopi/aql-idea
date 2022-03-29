@@ -2,10 +2,12 @@ package care.better.tools.aqlidea.plugin.settings
 
 import care.better.tools.aqlidea.plugin.toolWindow.AqlServer
 import care.better.tools.aqlidea.plugin.toolWindow.AqlServersConfiguration
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.xmlb.XmlSerializerUtil
 import com.intellij.util.xmlb.annotations.XCollection
 
@@ -63,8 +65,8 @@ class AqlServersPersistentState : PersistentStateComponent<AqlServersPersistentS
     )
 
     companion object {
-        fun getService(project: Project): AqlServersPersistentState {
-            return project.getService(AqlServersPersistentState::class.java)
+        fun getService(): AqlServersPersistentState {
+            return ApplicationManager.getApplication().getService(AqlServersPersistentState::class.java)
         }
     }
 }
