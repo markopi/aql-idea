@@ -2,9 +2,11 @@
 
 # adl-idea Changelog
 
-<!--
-## [Unreleased]
--->
+## 0.0.4
+### Added
+- Application level configuration
+- Server AQL console (double click on server in configuration panel)
+- Improved autocomplete
 
 ## 0.0.2
 ### Added

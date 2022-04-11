@@ -37,16 +37,17 @@ AQL support for Idea.
   Test button will test the configuration by making a test request to the current server
 - Click Ok to save the server configuration
 
-Servers will now be listed in the Servers tab inside the AQL tool window. To choose the currently active server, double-click on it. 
-Currently active server has an icon next to it.
+Servers will now be listed in the Servers tab inside the AQL tool window. To open a console for a particular server, 
+double click on the server name 
 
 ### Aql editing
 
-In the project, create a file with an .aql extension. This file should support: 
+The aql console supports: 
 - syntax highlighting 
 - autocompletion of keywords 
 - autocompletion of paths and archetypeIds according to the currently active server metadata 
 - executing an aql on the currently active server
+- multiple AQLs per file, which can be run individually
  
 ### Executing an aql
 
