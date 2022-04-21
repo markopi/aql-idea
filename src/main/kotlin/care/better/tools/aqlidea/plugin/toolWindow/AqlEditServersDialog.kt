@@ -91,7 +91,10 @@ class AqlEditDataSourcesDialogPanel(val model: AqlServersConfiguration) : JPanel
 
     private fun createEditPanel(): JPanel {
         serverNameField.document.addDocumentListener(SimpleDocumentListener {
-            currentServer?.name = it.document.text
+            currentServer?.let { current ->
+                current.name = it.document.text
+                deduplicateServerName(model.servers, current)
+            }
         })
         serverUrlField.document.addDocumentListener(SimpleDocumentListener {
             currentServer?.serverUrl = it.document.text
@@ -120,6 +123,7 @@ class AqlEditDataSourcesDialogPanel(val model: AqlServersConfiguration) : JPanel
             .addComponent(createTestPanel())
             .panel
     }
+
 
     private fun createTestPanel(): JPanel {
         val testPanel = JPanel(BorderLayout())
@@ -200,6 +204,32 @@ class AqlEditDataSourcesDialogPanel(val model: AqlServersConfiguration) : JPanel
 
     private val Document.text get() = getText(0, length)
 
+    companion object {
+        fun extractBaseNameAndIndex(name: String): Pair<String, Int> {
+            val regex = Regex("""^(.*)\((\d+)\)$""")
+            val match = regex.matchEntire(name) ?: return name.trim() to 0
+            val baseName = match.groupValues[1].trim()
+            val index = match.groupValues[2].toInt()
+            return baseName to index
+        }
+
+        private fun deduplicateServerName(allServers: MutableList<AqlServer>, current: AqlServer) {
+            val otherNames = allServers.filter { it !== current }.map { it.name }.toSet()
+            if (current.name !in otherNames) return
+
+            var (baseName, index) = extractBaseNameAndIndex(current.name)
+            while (true) {
+                index++
+                val candidate = "$baseName ($index)"
+                if (candidate !in otherNames) {
+                    current.name = candidate
+                    return
+                }
+            }
+        }
+
+    }
+
     private class SimpleDocumentListener(private val update: (e: DocumentEvent) -> Unit) : DocumentListener {
         override fun insertUpdate(e: DocumentEvent) = update(e)
 
@@ -255,4 +285,5 @@ class AqlEditDataSourcesDialogPanel(val model: AqlServersConfiguration) : JPanel
             return this
         }
     }
+
 }
