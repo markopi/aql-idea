@@ -1,5 +1,6 @@
 package care.better.tools.aqlidea.plugin.toolWindow
 
+import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlEditDataSourcesDialogPanel
 import org.junit.Test
 import kotlin.test.assertEquals
 

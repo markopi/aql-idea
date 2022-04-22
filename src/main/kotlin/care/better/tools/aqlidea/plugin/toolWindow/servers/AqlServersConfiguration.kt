@@ -1,4 +1,4 @@
-package care.better.tools.aqlidea.plugin.toolWindow
+package care.better.tools.aqlidea.plugin.toolWindow.servers
 
 data class AqlServersConfiguration(val servers: MutableList<AqlServer>) {
 

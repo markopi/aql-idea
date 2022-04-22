@@ -11,9 +11,8 @@ AQL support for Idea.
 ## TODO
 * Data Sources (global)
 * Script files under DataSource
-* Autocomplete
 * Publish/move to better-care github?
-* Tree view
+* Tree view/table: http://www.java2s.com/Code/Java/Swing-Components/GroupableGroupHeaderExample.htm
 
 ## Installation
 
