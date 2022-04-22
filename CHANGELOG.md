@@ -2,6 +2,10 @@
 
 # adl-idea Changelog
 
+## 0.0.5
+### Added
+- Deduplicate server names
+- 
 ## 0.0.4
 ### Added
 - Application level configuration
