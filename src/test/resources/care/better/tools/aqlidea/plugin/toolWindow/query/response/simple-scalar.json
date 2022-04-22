@@ -1,0 +1,8 @@
+{
+  "meta": {"href": "http://thinkehr2.better.care:8082/rest/v1/query/"},
+  "aql": "select e/ehr_id/value, c/uid/value from ehr e contains composition c limit 2",
+  "executedAql": "select e/ehr_id/value, c/uid/value from ehr e contains composition c limit 2", "resultSet": [
+  {"#0": "68ea6d53-c786-4f31-b68d-04d44f664d7f", "#1": "c878316d-5d6a-4204-8d5e-320b2a53732a::ihe.marand.si::1"},
+  {"#0": "68ea6d53-c786-4f31-b68d-04d44f664d7f", "#1": "65a3c952-c1b5-4b07-8050-512c5bea0ceb::ihe.marand.si::1"}
+]
+}

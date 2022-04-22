@@ -1,6 +1,8 @@
 package care.better.tools.aqlidea.plugin.toolWindow
 
+import care.better.tools.aqlidea.plugin.toolWindow.query.AqlQueryResultHeaderBuilder
 import care.better.tools.aqlidea.thinkehr.ThinkEhrClient
+import care.better.tools.aqlidea.ui.treetable.TreeTableData
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
@@ -41,7 +43,7 @@ class AqlToolWindowFactory: ToolWindowFactory {
             aqlToolWindow.showQueryTab(AqlToolWindow.QueryTab.table)
             aqlToolWindow.setRawRequest(null)
             aqlToolWindow.setRawResponse("<pending>")
-            aqlToolWindow.setTableModel(DefaultTableModel())
+            aqlToolWindow.setResultTableData(null)
             toolWindow.activate { }
         }
 
@@ -53,14 +55,14 @@ class AqlToolWindowFactory: ToolWindowFactory {
                 if (e is ThinkEhrClient.ThinkEhrAqlException) {
                     aqlToolWindow.setRawRequest(e.request.body)
                     aqlToolWindow.setRawResponse(e.response?.body)
-                    aqlToolWindow.setTableModel(DefaultTableModel())
+                    aqlToolWindow.setResultTableData(null)
                     aqlToolWindow.showQueryTab(AqlToolWindow.QueryTab.response)
                 }
                 else {
                     log.error("Error calling ThinkEhr server", e)
                     aqlToolWindow.setRawRequest("")
                     aqlToolWindow.setRawResponse(e.toString())
-                    aqlToolWindow.setTableModel(DefaultTableModel())
+                    aqlToolWindow.setResultTableData(null)
                     aqlToolWindow.showQueryTab(AqlToolWindow.QueryTab.response)
                 }
             }
@@ -81,26 +83,18 @@ class AqlToolWindowFactory: ToolWindowFactory {
             ToolWindowManager.getInstance(project).getToolWindow(TOOL_WINDOW_ID)!!
 
         private fun updateTableValues(aqlToolWindow: AqlToolWindow, response: ThinkEhrClient.QueryResponse) {
+            val parsedResponse = response.response
 
-            val model = DefaultTableModel()
-            if (response.response != null) {
-                response.response.resultSet.firstOrNull()
-                    ?.keys
-                    ?.forEach {
-                        model.addColumn(it)
-                    }
-
-                for (row in response.response.resultSet) {
-                    model.addRow(row.values.toTypedArray())
-                }
+            if (parsedResponse != null) {
+                val treeTableData = AqlQueryResultHeaderBuilder().build(parsedResponse)
+                aqlToolWindow.setResultTableData(treeTableData)
 
                 aqlToolWindow.showQueryTab(AqlToolWindow.QueryTab.table)
             } else {
+                aqlToolWindow.setResultTableData(TreeTableData(listOf(), listOf()))
                 aqlToolWindow.showQueryTab(AqlToolWindow.QueryTab.response)
 
             }
-
-            aqlToolWindow.setTableModel(model)
         }
     }
 }
