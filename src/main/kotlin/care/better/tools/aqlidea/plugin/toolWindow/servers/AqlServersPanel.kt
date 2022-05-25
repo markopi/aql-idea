@@ -1,8 +1,9 @@
-package care.better.tools.aqlidea.plugin.toolWindow
+package care.better.tools.aqlidea.plugin.toolWindow.servers
 
 import care.better.tools.aqlidea.plugin.AqlUtils
 import care.better.tools.aqlidea.plugin.console.AqlRootType
 import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
+import care.better.tools.aqlidea.plugin.toolWindow.AqlToolWindowFactory
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.icons.AllIcons
 import com.intellij.ide.scratch.ScratchFileService
@@ -10,7 +11,6 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Splitter
-import com.intellij.openapi.util.Key
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBList
 import com.intellij.ui.components.JBScrollPane
@@ -83,27 +83,6 @@ class AqlServersPanel(private val project: Project) : JPanel() {
         FileEditorManager.getInstance(project).openFile(contentFile, true)
 
     }
-//    private fun openServerConsole(server: AqlServer) {
-//        val pluginConfFile = AqlPluginHomeDir.getConsoleFile(server)
-//        val virtualFile = VfsUtil.findFileByIoFile(pluginConfFile.toFile(), true)
-//            ?: return
-//
-////        val document = FileDocumentManager.getInstance().getDocument(virtualFile) ?: return
-//        val editor = FileEditorManager.getInstance(project).openTextEditor(
-//            OpenFileDescriptor(
-//                project, virtualFile, 0
-//            ),
-//            true // request focus to editor
-//        )!!
-//
-////        CommandProcessor.getInstance().executeCommand(project,  {
-////
-////
-////        },
-////        "Open AQL Server Console", null)
-//
-//    }
-
 
     fun activate() {
         currentModel = stateService.readState()

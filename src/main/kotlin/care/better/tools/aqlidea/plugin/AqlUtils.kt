@@ -1,7 +1,7 @@
 package care.better.tools.aqlidea.plugin
 
 import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
-import care.better.tools.aqlidea.plugin.toolWindow.AqlServer
+import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlServer
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications

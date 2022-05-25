@@ -1,13 +1,11 @@
 package care.better.tools.aqlidea.plugin.settings
 
-import care.better.tools.aqlidea.plugin.toolWindow.AqlServer
-import care.better.tools.aqlidea.plugin.toolWindow.AqlServersConfiguration
+import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlServer
+import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlServersConfiguration
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.xmlb.XmlSerializerUtil
 import com.intellij.util.xmlb.annotations.XCollection
 

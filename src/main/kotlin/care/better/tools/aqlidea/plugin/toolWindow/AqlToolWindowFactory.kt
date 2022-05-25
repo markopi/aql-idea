@@ -1,6 +1,7 @@
 package care.better.tools.aqlidea.plugin.toolWindow
 
 import care.better.tools.aqlidea.plugin.toolWindow.query.AqlQueryResultHeaderBuilder
+import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlServersPanel
 import care.better.tools.aqlidea.thinkehr.ThinkEhrClient
 import care.better.tools.aqlidea.ui.treetable.TreeTableData
 import com.intellij.openapi.diagnostic.Logger
@@ -9,7 +10,6 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.content.ContentFactory
-import javax.swing.table.DefaultTableModel
 
 class AqlToolWindowFactory: ToolWindowFactory {
 
