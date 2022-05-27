@@ -2,6 +2,7 @@ package care.better.tools.aqlidea.plugin.settings
 
 import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlServer
 import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlServersConfiguration
+import com.intellij.openapi.application.Application
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
@@ -51,6 +52,8 @@ class AqlServersPersistentState : PersistentStateComponent<AqlServersPersistentS
     fun writeState(state: AqlServersConfiguration) {
         state.cleanDefaults()
         servers = state.servers.map { it.toServer() }
+        AqlPluginHomeDir.cleanup(state)
+
     }
 
     private data class Server(

@@ -1,27 +1,32 @@
 package care.better.tools.aqlidea.plugin.toolWindow.servers
 
 import care.better.tools.aqlidea.plugin.AqlUtils
-import care.better.tools.aqlidea.plugin.console.AqlRootType
+import care.better.tools.aqlidea.plugin.settings.AqlPluginHomeDir
 import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
 import care.better.tools.aqlidea.plugin.toolWindow.AqlToolWindowFactory
-import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.icons.AllIcons
-import com.intellij.ide.scratch.ScratchFileService
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.JBMenuItem
+import com.intellij.openapi.ui.JBPopupMenu
 import com.intellij.openapi.ui.Splitter
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.ui.components.JBLabel
-import com.intellij.ui.components.JBList
 import com.intellij.ui.components.JBScrollPane
 import java.awt.BorderLayout
 import java.awt.Component
+import java.awt.event.KeyAdapter
+import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import javax.swing.DefaultListModel
-import javax.swing.JList
+import java.nio.file.Path
 import javax.swing.JPanel
-import javax.swing.ListCellRenderer
+import javax.swing.JTree
+import javax.swing.SwingUtilities
+import javax.swing.tree.DefaultMutableTreeNode
+import javax.swing.tree.DefaultTreeCellRenderer
+import javax.swing.tree.DefaultTreeModel
 
 
 @Suppress("UNCHECKED_CAST")
@@ -31,67 +36,146 @@ class AqlServersPanel(private val project: Project) : JPanel() {
         createGui()
     }
 
-    private val stateService = AqlServersPersistentState.getService()
+    private val stateService: AqlServersPersistentState get() = AqlServersPersistentState.getService()
 
-    private lateinit var currentModel: AqlServersConfiguration
+    private lateinit var currentConfiguration: AqlServersConfiguration
 
     private lateinit var actionToolbar: ActionToolbar
-    private lateinit var dataSourcesList: JBList<AqlServer>
-    private lateinit var dataSourcesListModel: DefaultListModel<AqlServer>
+    private lateinit var dataSourcesTree: JTree
+    private lateinit var dataSourcesTreeModel: DefaultTreeModel
 
     private fun createGui() {
         layout = BorderLayout()
         actionToolbar = createActionToolbar()
         add(actionToolbar.component, BorderLayout.WEST)
 
-        dataSourcesList = JBList<AqlServer>()
-        dataSourcesListModel = DefaultListModel()
-        dataSourcesList.model = dataSourcesListModel
-        dataSourcesList.cellRenderer = AqlServerListCellRenderer()
+        dataSourcesTree = JTree()
+        dataSourcesTree.cellRenderer = AqlServersTreeCellRenderer()
+        dataSourcesTree.toggleClickCount = 0
 
-        dataSourcesList.addMouseListener(object : MouseAdapter() {
+        dataSourcesTree.addKeyListener(object : KeyAdapter() {
+            override fun keyPressed(e: KeyEvent) {
+                if (e.keyCode == KeyEvent.VK_ENTER) {
+                    executeDefaultAction()
+                    e.consume()
+                    return
+                }
+            }
+        })
+        dataSourcesTree.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount == 2) {
-//                    val clickIndex = dataSourcesList.locationToIndex(e.point)
-                    val listIndex = dataSourcesList.selectedIndex
-                    if (listIndex in 0 until currentModel.servers.size) {
-                        val aqlServer = currentModel.servers[listIndex]
-                        openServerConsole(aqlServer)
+                    executeDefaultAction()
+//                    e.consume()
+//                    return
+                }
 
-//                        populateDataSourcesList(currentModel)
+//                if (e.isPopupTrigger) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    // select tree node with right click as well as left click
+                    val n = dataSourcesTree.selectTreeRowOnPosition(e)
+//                    val path = dataSourcesTree.selectionPath ?: return
+                    val node = n as? AqlServersTreeNode ?: return
+                    val popup = JBPopupMenu()
+                    when (node) {
+                        is AqlServersTreeNode.ConsolesTreeNode -> {
+                            popup.add(JBMenuItem("Add console", AllIcons.General.Add).apply {
+                                addActionListener { createConsoleFile(node) }
+                            })
+                        }
+                        is AqlServersTreeNode.ConsoleTreeNode -> {
+                            popup.add(JBMenuItem("Rename console", null).apply {
+                                addActionListener { renameConsoleFile(node) }
+                            })
+                            popup.add(JBMenuItem("Remove console", AllIcons.General.Remove).apply {
+                                addActionListener { removeConsoleFile(node) }
+                            })
+                        }
+                        else -> {}
                     }
+                    if (popup.componentCount > 0) {
+                        popup.show(e.component, e.x, e.y)
+                    }
+//                    val listIndex = dataSourcesTree.selectedIndex
+//                    if (listIndex in 0 until currentConfiguration.servers.size) {
+//                        val aqlServer = currentConfiguration.servers[listIndex]
+//                        openServerConsole(aqlServer)
+//                    }
                 }
                 super.mouseClicked(e)
             }
         })
 
         val splitPanel = Splitter()
-        splitPanel.firstComponent = JBScrollPane(dataSourcesList)
+        splitPanel.firstComponent = JBScrollPane(dataSourcesTree)
         splitPanel.secondComponent = JPanel()
         add(splitPanel, BorderLayout.CENTER)
     }
 
-    private fun openServerConsole(server: AqlServer) {
 
-        val contentFile = ConsoleHistoryController.getContentFile(
-            AqlRootType.INSTANCE,
-            server.id,
-            ScratchFileService.Option.create_if_missing
-        )!!
+    private fun executeDefaultAction() {
+        val path = dataSourcesTree.selectionPath ?: return
+        val node = path.lastPathComponent as? AqlServersTreeNode ?: return
+        if (node is AqlServersTreeNode.AqlServerTreeNode) {
+            openServerConsole(node)
+        } else if (node is AqlServersTreeNode.ConsoleTreeNode) {
+            openConsole(node)
+        }
+    }
+
+
+    private fun JTree.selectTreeRowOnPosition(e: MouseEvent): DefaultMutableTreeNode? {
+        val selRow = getRowForLocation(e.x, e.y)
+        val selPath = getPathForLocation(e.x, e.y)
+        selectionPath = selPath
+        if (selRow > -1) {
+            setSelectionRow(selRow)
+        }
+        return selectionPath?.lastPathComponent as DefaultMutableTreeNode?
+
+    }
+
+    private fun removeConsoleFile(console: AqlServersTreeNode.ConsoleTreeNode) {
+        AqlPluginHomeDir.deleteConsoleFile(console.server, console.file)
+        dataSourcesTreeModel.removeNodeFromParent(console)
+    }
+
+    private fun renameConsoleFile(node: AqlServersTreeNode.ConsoleTreeNode) {
+        node.renameConsole(project)
+        dataSourcesTreeModel.nodeChanged(node)
+    }
+
+    private fun createConsoleFile(consoles: AqlServersTreeNode.ConsolesTreeNode) {
+        val newNode = consoles.createNewConsole()
+        dataSourcesTreeModel.insertNodeInto(newNode, consoles, consoles.childCount)
+    }
+
+    private fun openServerConsole(node: AqlServersTreeNode.AqlServerTreeNode) {
+        openConsole(node.server, AqlPluginHomeDir.getMainConsoleFile(node.server))
+//        val contentFile = ConsoleHistoryController.getContentFile(
+//            AqlRootType.INSTANCE,
+//            server.id,
+//            ScratchFileService.Option.create_if_missing
+//        )!!
+//        contentFile.putUserData(AqlUtils.KEY_AQL_SERVER_ID, server.id)
+//        FileEditorManager.getInstance(project).openFile(contentFile, true)
+    }
+
+    private fun openConsole(node: AqlServersTreeNode.ConsoleTreeNode) = openConsole(node.server, node.file)
+    private fun openConsole(server: AqlServer, file: Path) {
+        val contentFile = VfsUtil.findFile(file, true) ?: return
         contentFile.putUserData(AqlUtils.KEY_AQL_SERVER_ID, server.id)
-
         FileEditorManager.getInstance(project).openFile(contentFile, true)
-
     }
 
     fun activate() {
-        currentModel = stateService.readState()
-        populateDataSourcesList(currentModel)
+        currentConfiguration = stateService.readState()
+        populateDataSourcesList(currentConfiguration)
     }
 
     private fun populateDataSourcesList(model: AqlServersConfiguration) {
-        dataSourcesListModel.clear()
-        dataSourcesListModel.addAll(model.servers)
+        dataSourcesTreeModel = DefaultTreeModel(buildTreeNodeModel(model))
+        dataSourcesTree.model = dataSourcesTreeModel
     }
 
     private fun createActionToolbar(): ActionToolbar {
@@ -105,7 +189,7 @@ class AqlServersPanel(private val project: Project) : JPanel() {
                 if (ok) {
                     model.cleanDefaults()
                     stateService.writeState(model)
-                    currentModel = model
+                    currentConfiguration = model
                     populateDataSourcesList(model)
                 }
             }
@@ -116,34 +200,27 @@ class AqlServersPanel(private val project: Project) : JPanel() {
 
     }
 
-    private class AqlServerListCellRenderer() : JBLabel(), ListCellRenderer<AqlServer> {
-
-        init {
-            isOpaque = true
-        }
-
-        override fun getListCellRendererComponent(
-            list: JList<out AqlServer>,
-            value: AqlServer,
-            index: Int,
-            isSelected: Boolean,
-            cellHasFocus: Boolean
+    private class AqlServersTreeCellRenderer : DefaultTreeCellRenderer() {
+        val renderer = JBLabel()
+        override fun getTreeCellRendererComponent(
+            tree: JTree,
+            value: Any,
+            sel: Boolean,
+            expanded: Boolean,
+            leaf: Boolean,
+            row: Int,
+            hasFocus: Boolean
         ): Component {
-            text = value.name
-//            if (value.default) {
-//                icon = AllIcons.Actions.Run_anything
-//            } else {
-//                icon = null
-//            }
-
-            if (isSelected) {
-                background = list.selectionBackground
-                foreground = list.selectionForeground
-            } else {
-                background = list.background
-                foreground = list.foreground
+            val defaultRendered = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus)
+            val node = when (value) {
+//                is DefaultMutableTreeNode -> value.userObject as? AqlServersTreeNode ?: return defaultRendered
+                is AqlServersTreeNode -> value
+                else -> return defaultRendered
             }
-            return this
+
+            renderer.text = node.label
+            renderer.icon = node.icon
+            return renderer
         }
     }
 

@@ -27,7 +27,7 @@
         <toolWindow id="AQL" secondary="true" icon="AllIcons.General.Modified" anchor="bottom"
                     factoryClass="care.better.tools.aqlidea.plugin.toolWindow.AqlToolWindowFactory"/>
 
-<!--        <nonProjectFileWritingAccessExtension implementation="care.better.tools.aqlidea.plugin.settings.AqlConsoleWriteUnlocker" order="first"/>-->
+        <nonProjectFileWritingAccessExtension implementation="care.better.tools.aqlidea.plugin.settings.AqlConsoleWriteUnlocker" order="first"/>
 
         <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.service.ThinkEhrClientService"/>
         <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState"/>

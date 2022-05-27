@@ -6,9 +6,7 @@ import java.nio.file.Path
 
 /**
  * Avoid write protection dialogs for aql console files.
- * Should be no longer needed since we do not use home dir
  */
-@Deprecated("")
 class AqlConsoleWriteUnlocker : NonProjectFileWritingAccessExtension {
     override fun isWritable(file: VirtualFile): Boolean {
         if (!file.isInLocalFileSystem) return false
@@ -22,7 +20,7 @@ class AqlConsoleWriteUnlocker : NonProjectFileWritingAccessExtension {
 
     private fun Path.isUnderParentDir(dir: Path): Boolean {
         val absoluteParent = dir.toAbsolutePath()
-        var path = this.toAbsolutePath()
+        var path: Path? = this.toAbsolutePath()
         while (path != null) {
             if (path == absoluteParent) return true
             path = path.parent
