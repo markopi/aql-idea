@@ -1,13 +1,14 @@
 package care.better.tools.aqlidea.plugin
 
 import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
-import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlServer
+import care.better.tools.aqlidea.plugin.settings.AqlServer
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
+import java.nio.file.Path
 import java.util.*
 
 object AqlUtils {
@@ -84,6 +85,17 @@ object AqlUtils {
             aqlServers.defaultServer()
         }
     }
+
+    fun parentPathContainsDir(parent: Path, dir: Path): Boolean {
+        val absoluteParent = dir.toAbsolutePath()
+        var path: Path? = parent.toAbsolutePath()
+        while (path != null) {
+            if (path == absoluteParent) return true
+            path = path.parent
+        }
+        return false
+    }
+
 
 
 }

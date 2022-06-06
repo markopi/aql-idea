@@ -1,15 +1,13 @@
 package care.better.tools.aqlidea.plugin.settings
 
 import care.better.tools.aqlidea.plugin.AqlUtils
-import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlServer
-import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlServersConfiguration
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.fileChooser.ex.LocalFsFinder.VfsFile
-import com.intellij.openapi.util.io.FileAttributes
 import com.intellij.openapi.vfs.VfsUtil
-import org.apache.commons.io.FileUtils
+import com.intellij.util.io.size
 import org.apache.commons.io.FilenameUtils
-import org.apache.commons.io.file.PathUtils
 import org.apache.commons.lang3.SystemUtils
 import java.nio.file.Files
 import java.nio.file.Path
@@ -17,8 +15,11 @@ import java.nio.file.Paths
 import kotlin.streams.toList
 
 
-@Deprecated("")
 object AqlPluginHomeDir {
+    private val objectMapper= ObjectMapper().apply {
+        registerModule(KotlinModule())
+        setSerializationInclusion(JsonInclude.Include.NON_NULL)
+    }
     fun homeDir(): Path {
         val userHomeDir = Paths.get(System.getProperty("user.home"))
         val pluginConfDir = userHomeDir.resolve(".aql-idea")
@@ -66,6 +67,24 @@ object AqlPluginHomeDir {
         val serverConsolesDir = serverConsolesDir(server)
         if (serverConsolesDir != path.parent) return
         Files.deleteIfExists(path)
+    }
+
+    fun readAqlServerConsoleHistoryHistory(consolePath: Path): AqlServerConsoleHistory {
+        val historyPath = Paths.get(FilenameUtils.removeExtension(consolePath.toString()) + ".history")
+        if (!Files.exists(historyPath)) {
+            return AqlServerConsoleHistory(ArrayDeque(20))
+        }
+        val history = try {
+             objectMapper.readValue(historyPath.toFile(), AqlServerConsoleHistory::class.java)
+        } catch (e: Exception) {
+            Files.delete(historyPath)
+            AqlServerConsoleHistory(ArrayDeque(20))
+        }
+        return history
+    }
+    fun writeAqlServerConsoleHistory(consolePath: Path, history: AqlServerConsoleHistory) {
+        val historyPath = Paths.get(FilenameUtils.removeExtension(consolePath.toString()) + ".history")
+        objectMapper.writeValue(historyPath.toFile(), history)
     }
 
     fun createConsoleFile(server: AqlServer, name: String): Path {

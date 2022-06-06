@@ -34,6 +34,9 @@
 
         <scratch.rootType implementation="care.better.tools.aqlidea.plugin.console.AqlRootType"/>
 
+                <fileEditorProvider implementation="care.better.tools.aqlidea.plugin.editor.history.AqlHistoryEditorProvider"/>
+
+
     </extensions>
 
 

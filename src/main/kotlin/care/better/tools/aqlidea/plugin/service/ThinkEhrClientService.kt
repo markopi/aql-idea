@@ -1,7 +1,7 @@
 package care.better.tools.aqlidea.plugin.service
 
 import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
-import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlServer
+import care.better.tools.aqlidea.plugin.settings.AqlServer
 import care.better.tools.aqlidea.thinkehr.CachingThinkEhrClient
 import care.better.tools.aqlidea.thinkehr.ThinkEhrClient
 import care.better.tools.aqlidea.thinkehr.ThinkEhrClientImpl

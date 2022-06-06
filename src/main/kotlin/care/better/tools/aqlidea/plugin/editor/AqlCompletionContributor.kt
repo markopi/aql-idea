@@ -7,7 +7,7 @@ import care.better.tools.aqlidea.aql.autocomplete.AqlKeywordAutocompletionProvid
 import care.better.tools.aqlidea.aql.autocomplete.AqlServerAutocompletionProvider
 import care.better.tools.aqlidea.plugin.AqlUtils
 import care.better.tools.aqlidea.plugin.service.ThinkEhrClientService
-import care.better.tools.aqlidea.plugin.toolWindow.servers.AqlServer
+import care.better.tools.aqlidea.plugin.settings.AqlServer
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder

@@ -2,18 +2,23 @@ package care.better.tools.aqlidea.plugin.toolWindow.servers
 
 import care.better.tools.aqlidea.plugin.AqlUtils
 import care.better.tools.aqlidea.plugin.settings.AqlPluginHomeDir
+import care.better.tools.aqlidea.plugin.settings.AqlServer
+import care.better.tools.aqlidea.plugin.settings.AqlServersConfiguration
 import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
 import care.better.tools.aqlidea.plugin.toolWindow.AqlToolWindowFactory
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.JBMenuItem
 import com.intellij.openapi.ui.JBPopupMenu
 import com.intellij.openapi.ui.Splitter
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.components.JBTextField
+import com.intellij.util.ui.FormBuilder
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.event.KeyAdapter
@@ -21,6 +26,7 @@ import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.nio.file.Path
+import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTree
 import javax.swing.SwingUtilities
@@ -55,26 +61,22 @@ class AqlServersPanel(private val project: Project) : JPanel() {
 
         dataSourcesTree.addKeyListener(object : KeyAdapter() {
             override fun keyPressed(e: KeyEvent) {
-                if (e.keyCode == KeyEvent.VK_ENTER) {
+                if (e.keyCode == KeyEvent.VK_ENTER || e.keyCode == KeyEvent.VK_F4) {
                     executeDefaultAction()
                     e.consume()
-                    return
                 }
             }
         })
         dataSourcesTree.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
-                if (e.clickCount == 2) {
+                if (SwingUtilities.isLeftMouseButton(e) && e.clickCount == 2) {
                     executeDefaultAction()
-//                    e.consume()
-//                    return
                 }
 
 //                if (e.isPopupTrigger) {
                 if (SwingUtilities.isRightMouseButton(e)) {
                     // select tree node with right click as well as left click
                     val n = dataSourcesTree.selectTreeRowOnPosition(e)
-//                    val path = dataSourcesTree.selectionPath ?: return
                     val node = n as? AqlServersTreeNode ?: return
                     val popup = JBPopupMenu()
                     when (node) {
@@ -96,11 +98,6 @@ class AqlServersPanel(private val project: Project) : JPanel() {
                     if (popup.componentCount > 0) {
                         popup.show(e.component, e.x, e.y)
                     }
-//                    val listIndex = dataSourcesTree.selectedIndex
-//                    if (listIndex in 0 until currentConfiguration.servers.size) {
-//                        val aqlServer = currentConfiguration.servers[listIndex]
-//                        openServerConsole(aqlServer)
-//                    }
                 }
                 super.mouseClicked(e)
             }
@@ -132,7 +129,6 @@ class AqlServersPanel(private val project: Project) : JPanel() {
             setSelectionRow(selRow)
         }
         return selectionPath?.lastPathComponent as DefaultMutableTreeNode?
-
     }
 
     private fun removeConsoleFile(console: AqlServersTreeNode.ConsoleTreeNode) {
@@ -146,19 +142,12 @@ class AqlServersPanel(private val project: Project) : JPanel() {
     }
 
     private fun createConsoleFile(consoles: AqlServersTreeNode.ConsolesTreeNode) {
-        val newNode = consoles.createNewConsole()
+        val newNode = consoles.createNewConsole(project) ?: return
         dataSourcesTreeModel.insertNodeInto(newNode, consoles, consoles.childCount)
     }
 
     private fun openServerConsole(node: AqlServersTreeNode.AqlServerTreeNode) {
         openConsole(node.server, AqlPluginHomeDir.getMainConsoleFile(node.server))
-//        val contentFile = ConsoleHistoryController.getContentFile(
-//            AqlRootType.INSTANCE,
-//            server.id,
-//            ScratchFileService.Option.create_if_missing
-//        )!!
-//        contentFile.putUserData(AqlUtils.KEY_AQL_SERVER_ID, server.id)
-//        FileEditorManager.getInstance(project).openFile(contentFile, true)
     }
 
     private fun openConsole(node: AqlServersTreeNode.ConsoleTreeNode) = openConsole(node.server, node.file)
@@ -211,17 +200,12 @@ class AqlServersPanel(private val project: Project) : JPanel() {
             row: Int,
             hasFocus: Boolean
         ): Component {
-            val defaultRendered = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus)
-            val node = when (value) {
-//                is DefaultMutableTreeNode -> value.userObject as? AqlServersTreeNode ?: return defaultRendered
-                is AqlServersTreeNode -> value
-                else -> return defaultRendered
-            }
+            val node = value as? AqlServersTreeNode
+                ?: return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus)
 
             renderer.text = node.label
             renderer.icon = node.icon
             return renderer
         }
     }
-
 }

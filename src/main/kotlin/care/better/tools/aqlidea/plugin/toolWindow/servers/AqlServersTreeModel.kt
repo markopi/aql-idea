@@ -1,14 +1,14 @@
 package care.better.tools.aqlidea.plugin.toolWindow.servers
 
+import care.better.tools.aqlidea.plugin.AqlDialogs
 import care.better.tools.aqlidea.plugin.icons.AqlPluginIcons
 import care.better.tools.aqlidea.plugin.settings.AqlPluginHomeDir
+import care.better.tools.aqlidea.plugin.settings.AqlServer
+import care.better.tools.aqlidea.plugin.settings.AqlServersConfiguration
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.util.loadElementAndKeepBoundaryWhitespace
-import com.intellij.util.ui.tree.AbstractTreeModel
 import org.apache.commons.io.FilenameUtils
 import java.nio.file.Files
 import java.nio.file.Path
@@ -49,21 +49,31 @@ sealed class AqlServersTreeNode() : DefaultMutableTreeNode() {
         override val label: String = "Consoles"
         override fun readChildren(): List<ConsoleTreeNode> = loadConsoles()
 
-        fun createNewConsole(): ConsoleTreeNode {
+        private fun deduplicateName(originalName: String, forceNumberSuffix: Boolean): String {
             val existingFiles = AqlPluginHomeDir.listConsoleFiles(server)
             val existingNames =
                 existingFiles.map { FilenameUtils.removeExtension(it.fileName.toString()).toLowerCase() }.toSet()
 
+            if (!forceNumberSuffix && originalName !in existingNames) return originalName
             val nameBase = "Console"
-            var index = 1
+            var index = if (forceNumberSuffix) 1 else 2
             var name = "$nameBase $index"
             while (name.toLowerCase() in existingNames) {
                 index++
                 name = "$nameBase $index"
             }
-            val newFile = AqlPluginHomeDir.createConsoleFile(server, name)
-            val newNode = ConsoleTreeNode(server, newFile)
-            return newNode
+            return name
+        }
+
+        fun createNewConsole(project: Project): ConsoleTreeNode? {
+
+            val originalName = deduplicateName("Console", true)
+            val chosenName = AqlDialogs.rename(project, "Create New Console", "Name", originalName)
+            if (chosenName == null || chosenName.isBlank()) return null
+            val actualName = deduplicateName(chosenName, false)
+
+            val newFile = AqlPluginHomeDir.createConsoleFile(server, actualName)
+            return ConsoleTreeNode(server, newFile)
         }
 
 
@@ -75,12 +85,14 @@ sealed class AqlServersTreeNode() : DefaultMutableTreeNode() {
         override val label: String get() = file.fileName.toString()
         override fun readChildren(): List<AqlServersTreeNode> = listOf()
 
-        fun renameConsole(project: Project?): Boolean {
+        fun renameConsole(project: Project): Boolean {
             val oldFileName = file.fileName.toString()
             val oldExtension = FilenameUtils.getExtension(oldFileName)
             val oldName = FilenameUtils.removeExtension(oldFileName)
+//            val renamedValue =
+//                Messages.showInputDialog(project, "New name for console '$oldName'", "Rename Console", null)
             val renamedValue =
-                Messages.showInputDialog(project, "New name for console '$oldName'", "Rename Console", null)
+                AqlDialogs.rename(project, "Rename console '$oldName'", "New name", oldName)
             if (renamedValue == null || renamedValue.isBlank()) return false
 
             val newFileName = "$renamedValue.$oldExtension"

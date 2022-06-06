@@ -1,4 +1,6 @@
-package care.better.tools.aqlidea.plugin.toolWindow.servers
+package care.better.tools.aqlidea.plugin.settings
+
+import java.time.Instant
 
 data class AqlServersConfiguration(val servers: MutableList<AqlServer>) {
 
@@ -21,3 +23,7 @@ data class AqlServer(
     var password: String,
     var default: Boolean
 )
+
+data class AqlServerConsoleHistory(val history: ArrayDeque<Item>) {
+    data class Item(val timestamp: Long, val aql: String)
+}

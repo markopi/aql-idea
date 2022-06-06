@@ -1,6 +1,8 @@
 package care.better.tools.aqlidea.plugin.toolWindow.servers
 
 import care.better.tools.aqlidea.plugin.service.ThinkEhrClientService
+import care.better.tools.aqlidea.plugin.settings.AqlServer
+import care.better.tools.aqlidea.plugin.settings.AqlServersConfiguration
 import care.better.tools.aqlidea.plugin.toolWindow.AqlToolWindowFactory
 import care.better.tools.aqlidea.thinkehr.ThinkEhrTarget
 import com.intellij.icons.AllIcons

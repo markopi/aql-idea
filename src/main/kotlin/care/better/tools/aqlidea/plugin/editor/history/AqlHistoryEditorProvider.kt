@@ -1,42 +1,42 @@
-package care.better.tools.aqlidea.plugin.editor
+package care.better.tools.aqlidea.plugin.editor.history
 
+import care.better.tools.aqlidea.plugin.editor.AqlFileType
 import com.intellij.openapi.components.NamedComponent
 import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
 import org.jdom.Element
+import org.slf4j.LoggerFactory
 
-@Deprecated("Does not work, does not trigger any events")
-class AqlEditorProvider : FileEditorProvider, NamedComponent, DumbAware {
+class AqlHistoryEditorProvider : FileEditorProvider, NamedComponent, DumbAware {
+    private val log = LoggerFactory.getLogger(AqlHistoryEditorProvider::class.java)
+
     override fun accept(project: Project, file: VirtualFile): Boolean {
         return file.fileType == AqlFileType.INSTANCE
     }
 
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
-        val defaultTextEditor = TextEditorProvider.getInstance().createEditor(project, file) as TextEditor
-//        return defaultTextEditor
-        return AqlEditor(project, file, defaultTextEditor)
+        return AqlHistoryEditor(project, file)
     }
 
     override fun getEditorTypeId(): String {
-        return "AQL"
+        return "AQL.history"
     }
 
     override fun getPolicy(): FileEditorPolicy {
-        return FileEditorPolicy.NONE
+        return FileEditorPolicy.PLACE_AFTER_DEFAULT_EDITOR
     }
 
     override fun disposeEditor(editor: FileEditor) {
-        TextEditorProvider.getInstance().disposeEditor(editor)
+        Disposer.dispose(editor)
     }
 
     override fun readState(sourceElement: Element, project: Project, file: VirtualFile): FileEditorState {
-        return TextEditorProvider.getInstance().readState(sourceElement, project, file)
+        return FileEditorState.INSTANCE
     }
 
     override fun writeState(state: FileEditorState, project: Project, targetElement: Element) {
-        TextEditorProvider.getInstance().writeState(state, project, targetElement)
     }
 }
