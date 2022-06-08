@@ -1,6 +1,13 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# adl-idea Changelog
+# aql-idea Changelog
+
+## 0.0.7
+- Moved all configuration to HOME/.aql-idea
+- Support for multiple consoles per server
+- Aql query history per console
+- show results in tree table
+
 
 ## 0.0.6
 - Compatibility with latest Idea version: 221.*

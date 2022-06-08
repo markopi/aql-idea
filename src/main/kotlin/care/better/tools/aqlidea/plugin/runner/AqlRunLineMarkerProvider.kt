@@ -3,7 +3,7 @@ package care.better.tools.aqlidea.plugin.runner
 import care.better.tools.aqlidea.aql.LexedAqls
 import care.better.tools.aqlidea.plugin.AqlUtils
 import care.better.tools.aqlidea.plugin.editor.AqlTextTokenTypes
-import care.better.tools.aqlidea.plugin.settings.AqlPluginHomeDir
+import care.better.tools.aqlidea.plugin.settings.AqlPluginConfigurationService
 import care.better.tools.aqlidea.plugin.settings.AqlServerConsoleHistory
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
@@ -45,14 +45,14 @@ class AqlRunLineMarkerProvider : RunLineMarkerContributor() {
         }
         fun addToHistory(aql: String) {
             if (virtualFile==null) return
-            val configuration = AqlPluginHomeDir.readAqlServerConsoleHistoryHistory(virtualFile.toNioPath())
+            val configuration = AqlPluginConfigurationService.readAqlServerConsoleHistoryHistory(virtualFile.toNioPath())
             // remove old calls of this same aql
             configuration.history.removeAll { it.aql==aql }
             configuration.history.addFirst(AqlServerConsoleHistory.Item(System.currentTimeMillis(), aql))
             while (configuration.history.size>20) {
                 configuration.history.removeLast()
             }
-            AqlPluginHomeDir.writeAqlServerConsoleHistory(virtualFile.toNioPath(), configuration)
+            AqlPluginConfigurationService.writeAqlServerConsoleHistory(virtualFile.toNioPath(), configuration)
         }
 
 

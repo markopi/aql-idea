@@ -1,24 +1,18 @@
 package care.better.tools.aqlidea.plugin.toolWindow.servers
 
 import care.better.tools.aqlidea.plugin.AqlUtils
-import care.better.tools.aqlidea.plugin.settings.AqlPluginHomeDir
-import care.better.tools.aqlidea.plugin.settings.AqlServer
-import care.better.tools.aqlidea.plugin.settings.AqlServersConfiguration
-import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
+import care.better.tools.aqlidea.plugin.settings.*
 import care.better.tools.aqlidea.plugin.toolWindow.AqlToolWindowFactory
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.JBMenuItem
 import com.intellij.openapi.ui.JBPopupMenu
 import com.intellij.openapi.ui.Splitter
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.JBTextField
-import com.intellij.util.ui.FormBuilder
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.event.KeyAdapter
@@ -26,7 +20,6 @@ import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.nio.file.Path
-import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTree
 import javax.swing.SwingUtilities
@@ -42,7 +35,7 @@ class AqlServersPanel(private val project: Project) : JPanel() {
         createGui()
     }
 
-    private val stateService: AqlServersPersistentState get() = AqlServersPersistentState.getService()
+    private val stateService = AqlServersConfigurationService.INSTANCE
 
     private lateinit var currentConfiguration: AqlServersConfiguration
 
@@ -132,7 +125,7 @@ class AqlServersPanel(private val project: Project) : JPanel() {
     }
 
     private fun removeConsoleFile(console: AqlServersTreeNode.ConsoleTreeNode) {
-        AqlPluginHomeDir.deleteConsoleFile(console.server, console.file)
+        AqlPluginConfigurationService.deleteConsoleFile(console.server, console.file)
         dataSourcesTreeModel.removeNodeFromParent(console)
     }
 
@@ -147,7 +140,7 @@ class AqlServersPanel(private val project: Project) : JPanel() {
     }
 
     private fun openServerConsole(node: AqlServersTreeNode.AqlServerTreeNode) {
-        openConsole(node.server, AqlPluginHomeDir.getMainConsoleFile(node.server))
+        openConsole(node.server, AqlPluginConfigurationService.getMainConsoleFile(node.server))
     }
 
     private fun openConsole(node: AqlServersTreeNode.ConsoleTreeNode) = openConsole(node.server, node.file)
@@ -158,7 +151,7 @@ class AqlServersPanel(private val project: Project) : JPanel() {
     }
 
     fun activate() {
-        currentConfiguration = stateService.readState()
+        currentConfiguration = stateService.load()
         populateDataSourcesList(currentConfiguration)
     }
 
@@ -170,14 +163,14 @@ class AqlServersPanel(private val project: Project) : JPanel() {
     private fun createActionToolbar(): ActionToolbar {
         val action = object : AnAction("Configure", "Configure data sources", AllIcons.General.Settings) {
             override fun actionPerformed(e: AnActionEvent) {
-                val stateService = AqlServersPersistentState.getService()
-                val model = stateService.readState()
+                val stateService = AqlServersConfigurationService.INSTANCE
+                val model = stateService.load()
 
                 val dialog = AqlEditDataSourcesDialog(e.project!!, model)
                 val ok = dialog.showAndGet()
                 if (ok) {
                     model.cleanDefaults()
-                    stateService.writeState(model)
+                    stateService.save(model)
                     currentConfiguration = model
                     populateDataSourcesList(model)
                 }

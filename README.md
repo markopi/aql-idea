@@ -9,14 +9,11 @@ AQL support for Idea.
 <!-- Plugin description end -->
 
 ## TODO
-* Data Sources (global)
-* Script files under DataSource
 * Publish/move to better-care github?
-* Tree view/table: http://www.java2s.com/Code/Java/Swing-Components/GroupableGroupHeaderExample.htm
 
 ## Installation
 
-- Using IDE built-in plugin system:
+- Using IDE built-in plugin system (not yet supported):
   
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "aql-idea"</kbd> >
   <kbd>Install Plugin</kbd>
@@ -37,7 +34,17 @@ AQL support for Idea.
 - Click Ok to save the server configuration
 
 Servers will now be listed in the Servers tab inside the AQL tool window. To open a console for a particular server, 
-double click on the server name 
+double-click on the server name. 
+
+#### Multiple consoles per server
+
+Aql servers are now listed in a tree view. To create a new console:
+- Expand the tree node of an aql server.
+- Right-click on the console sub-node, and choose Add Console.
+- Name the console, and select ok. The console should now be present under the consoles sub-node.  
+- To open the console, double-click on the console name, or press enter
+
+Each additional aql console can be deleted or renamed by right-clicking on it and selecting the appropriate option.
 
 ### Aql editing
 
@@ -53,6 +60,13 @@ The aql console supports:
 In the gutter there should be a Run icon next to each start of an aql. Click on it to run that particular aql on the
 currently active server. The results will be shown in AQL tool window, tab Query Results. Besides the results as a table,
 there will also be tabs that contain the raw request and response contents.
+
+### Aql query history
+ 
+At the bottom of each aql console editor, there is an additional history tab. On this tab you can see recent previously
+executed queries, and optionally rerun them. 
+
+Each console has its own history.
 
 
 ---

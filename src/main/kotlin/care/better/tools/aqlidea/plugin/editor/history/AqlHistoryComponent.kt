@@ -3,7 +3,7 @@ package care.better.tools.aqlidea.plugin.editor.history
 import care.better.tools.aqlidea.plugin.AqlUtils
 import care.better.tools.aqlidea.plugin.editor.AqlFileType
 import care.better.tools.aqlidea.plugin.runner.AqlQueryRunner
-import care.better.tools.aqlidea.plugin.settings.AqlPluginHomeDir
+import care.better.tools.aqlidea.plugin.settings.AqlPluginConfigurationService
 import care.better.tools.aqlidea.plugin.settings.AqlServerConsoleHistory
 import care.better.tools.aqlidea.plugin.toolWindow.AqlToolWindowFactory
 import com.intellij.icons.AllIcons
@@ -106,7 +106,7 @@ class AqlHistoryComponent(private val project: Project, private val consoleFile:
     }
 
     fun populate() {
-        val configuration = AqlPluginHomeDir.readAqlServerConsoleHistoryHistory(consoleFile)
+        val configuration = AqlPluginConfigurationService.readAqlServerConsoleHistoryHistory(consoleFile)
         populate(configuration)
     }
 

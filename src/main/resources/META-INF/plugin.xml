@@ -30,7 +30,7 @@
         <nonProjectFileWritingAccessExtension implementation="care.better.tools.aqlidea.plugin.settings.AqlConsoleWriteUnlocker" order="first"/>
 
         <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.service.ThinkEhrClientService"/>
-        <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState"/>
+<!--        <applicationService serviceImplementation="care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState"/>-->
 
         <scratch.rootType implementation="care.better.tools.aqlidea.plugin.console.AqlRootType"/>
 

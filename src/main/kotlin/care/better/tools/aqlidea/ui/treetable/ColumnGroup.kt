@@ -13,6 +13,7 @@ import javax.swing.plaf.metal.MetalBorders
 import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.TableCellRenderer
 import javax.swing.table.TableColumn
+import kotlin.math.max
 
 /**
  * http://www.java2s.com/Code/Java/Swing-Components/GroupableGroupHeaderExample.htm
@@ -99,7 +100,8 @@ class ColumnGroup(renderer: TableCellRenderer?, text: String?) {
                 width += obj.width
                 width += margin
             } else {
-                width += (obj as ColumnGroup).getSize(table).width
+                val size = (obj as ColumnGroup).getSize(table)
+                width += size.width
             }
         }
 

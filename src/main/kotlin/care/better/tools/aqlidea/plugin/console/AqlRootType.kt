@@ -1,10 +1,8 @@
 package care.better.tools.aqlidea.plugin.console
 
 import care.better.tools.aqlidea.plugin.AqlUtils
-import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
+import care.better.tools.aqlidea.plugin.settings.AqlServersConfigurationService
 import com.intellij.execution.console.ConsoleRootType
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
 
 class AqlRootType : ConsoleRootType("AQL", "AQL Console") {
 
@@ -13,7 +11,7 @@ class AqlRootType : ConsoleRootType("AQL", "AQL Console") {
     }
 
     override fun getContentPathName(id: String): String {
-        val conf = AqlServersPersistentState.getService().readState()
+        val conf = AqlServersConfigurationService.INSTANCE.load()
         val server = conf.servers.firstOrNull { it.id == id }
         return AqlUtils.sanitizeFilename(server?.name ?: id)
     }

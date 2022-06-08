@@ -3,13 +3,13 @@ package care.better.tools.aqlidea.plugin.settings
 import java.time.Instant
 
 data class AqlServersConfiguration(val servers: MutableList<AqlServer>) {
-
     fun cleanDefaults() {
         val default = defaultServer()
         for (server in servers) {
             server.default = server === default
         }
     }
+
     fun defaultServer(): AqlServer? {
         return servers.firstOrNull { it.default } ?: servers.firstOrNull()
     }

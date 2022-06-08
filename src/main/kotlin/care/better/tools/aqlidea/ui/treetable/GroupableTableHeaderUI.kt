@@ -13,6 +13,7 @@ import javax.swing.plaf.basic.BasicTableHeaderUI
 import javax.swing.plaf.metal.MetalBorders
 import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.TableColumn
+import kotlin.math.max
 
 /*
  * (swing1.1beta3)
@@ -52,7 +53,7 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
                     cellRect.height = size.height - groupHeight
                     cellRect.y = groupHeight
                 }
-            cellRect.width = aColumn.width + columnMargin - columnMargin
+            cellRect.width = aColumn.width // + columnMargin
             if (cellRect.intersects(clipBounds)) {
                 paintCell(g, cellRect, column)
             }
@@ -63,9 +64,8 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
 
     private fun paintCell(g: Graphics, cellRect: Rectangle, columnIndex: Int) {
         val aColumn = header.columnModel.getColumn(columnIndex)
-        var renderer = aColumn.headerRenderer
         //revised by Java2s.com
-        renderer = object : DefaultTableCellRenderer() {
+        val renderer = object : DefaultTableCellRenderer() {
             override fun getTableCellRendererComponent(
                 table: JTable,
                 value: Any,
@@ -80,11 +80,9 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
                 header.verticalAlignment = BOTTOM
                 header.text = value.toString()
                 header.foreground = table.tableHeader.foreground
+//                header.foreground = Color.RED
                 header.background = table.tableHeader.background
 //                header.border = UIManager.getBorder("TableHeader.cellBorder")
-//                header.border = LineBorder.createBlackLineBorder()
-//                header.border = BevelBorder(BevelBorder.RAISED, Color.BLACK, Color.DARK_GRAY)
-//                header.border = SideBorder(Color.BLACK, SideBorder.TOP + SideBorder.LEFT)
                 header.border = MetalBorders.TableHeaderBorder()
 
                 return header
@@ -120,32 +118,17 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
     //revised by Java2s.com
     private val headerHeight: Int
         get() {
-            var height = 0
             val columnModel = header.columnModel
+            var height =0
             for (column in 0 until columnModel.columnCount) {
                 val aColumn = columnModel.getColumn(column)
                 val renderer = aColumn.headerRenderer ?: header.defaultRenderer
                 val component = renderer.getTableCellRendererComponent(
                     header.table, aColumn.headerValue, false, false, -1, column)
-                var cHeight = component.height
 
-//                var cHeight = aColumn.headerRenderer
-//                    ?.getTableCellRendererComponent(
-//                        header.table, aColumn.headerValue, false, false, -1, column)
-//                    ?.preferredSize?.height
-//                    ?: 120
-
-//                val renderer = aColumn.headerRenderer ?: return 60
-//                //revised by Java2s.com
-//                val comp = renderer.getTableCellRendererComponent(
-//                    header.table, aColumn.headerValue, false, false, -1, column
-//                )
-//                var cHeight = comp.preferredSize.height
                 val cGroups = (header as GroupableTableHeader).getColumnGroups(aColumn)
-                for (cGroup in cGroups) {
-                    cHeight += cGroup.getSize(header.table).height
-                }
-                height = Math.max(height, cHeight)
+                val groupsHeight = cGroups.sumOf { it.getSize(header.table).height }
+                height = max(height, component.preferredSize.height + groupsHeight)
             }
             return height
         }
@@ -165,7 +148,7 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
         val enumeration: Enumeration<*> = header.columnModel.columns
         while (enumeration.hasMoreElements()) {
             val aColumn = enumeration.nextElement() as TableColumn
-            width = width + aColumn.preferredWidth
+            width += aColumn.preferredWidth
         }
         return createHeaderSize(width)
     }

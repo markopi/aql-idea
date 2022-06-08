@@ -13,7 +13,7 @@ class AqlConsoleWriteUnlocker : NonProjectFileWritingAccessExtension {
         if (!file.path.endsWith(".aql")) return false
         val path = file.toNioPath()
 
-        if (AqlUtils.parentPathContainsDir(AqlPluginHomeDir.homeDir(), path)) return true
+        if (AqlUtils.parentPathContainsDir(AqlPluginConfigurationService.homeDir(), path)) return true
 
         return super.isWritable(file)
     }

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.util.io.size
 import org.apache.commons.io.FilenameUtils
 import org.apache.commons.lang3.SystemUtils
 import java.nio.file.Files
@@ -15,8 +14,8 @@ import java.nio.file.Paths
 import kotlin.streams.toList
 
 
-object AqlPluginHomeDir {
-    private val objectMapper= ObjectMapper().apply {
+object AqlPluginConfigurationService {
+    val objectMapper= ObjectMapper().apply {
         registerModule(KotlinModule())
         setSerializationInclusion(JsonInclude.Include.NON_NULL)
     }
@@ -32,6 +31,8 @@ object AqlPluginHomeDir {
         return pluginConfDir
     }
 
+    /** Remove any orphaned servers that are no longer in configuration.
+     * Should be called only after the configuration is saved. */
     fun cleanup(configuration: AqlServersConfiguration) {
         val existingServerIds = configuration.servers.map { it.id }.toSet()
         val serversPath = homeDir().resolve("servers")

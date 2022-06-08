@@ -1,7 +1,7 @@
 package care.better.tools.aqlidea.plugin.service
 
-import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
 import care.better.tools.aqlidea.plugin.settings.AqlServer
+import care.better.tools.aqlidea.plugin.settings.AqlServersConfigurationService
 import care.better.tools.aqlidea.thinkehr.CachingThinkEhrClient
 import care.better.tools.aqlidea.thinkehr.ThinkEhrClient
 import care.better.tools.aqlidea.thinkehr.ThinkEhrClientImpl
@@ -17,8 +17,7 @@ class ThinkEhrClientService {
 
     @Deprecated("Replaced with toThinkEhrTarget")
     fun getTarget(project: Project): ThinkEhrTarget? {
-        val settings = AqlServersPersistentState.getService()
-        val state = settings.readState()
+        val state = AqlServersConfigurationService.INSTANCE.load()
         val defaultServer = state.defaultServer()
         if (defaultServer == null ) {
             val n = Notification(

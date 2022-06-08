@@ -2,7 +2,7 @@ package care.better.tools.aqlidea.plugin.toolWindow.servers
 
 import care.better.tools.aqlidea.plugin.AqlDialogs
 import care.better.tools.aqlidea.plugin.icons.AqlPluginIcons
-import care.better.tools.aqlidea.plugin.settings.AqlPluginHomeDir
+import care.better.tools.aqlidea.plugin.settings.AqlPluginConfigurationService
 import care.better.tools.aqlidea.plugin.settings.AqlServer
 import care.better.tools.aqlidea.plugin.settings.AqlServersConfiguration
 import com.intellij.icons.AllIcons
@@ -50,12 +50,12 @@ sealed class AqlServersTreeNode() : DefaultMutableTreeNode() {
         override fun readChildren(): List<ConsoleTreeNode> = loadConsoles()
 
         private fun deduplicateName(originalName: String, forceNumberSuffix: Boolean): String {
-            val existingFiles = AqlPluginHomeDir.listConsoleFiles(server)
+            val existingFiles = AqlPluginConfigurationService.listConsoleFiles(server)
             val existingNames =
                 existingFiles.map { FilenameUtils.removeExtension(it.fileName.toString()).toLowerCase() }.toSet()
 
             if (!forceNumberSuffix && originalName !in existingNames) return originalName
-            val nameBase = "Console"
+            val nameBase = originalName
             var index = if (forceNumberSuffix) 1 else 2
             var name = "$nameBase $index"
             while (name.toLowerCase() in existingNames) {
@@ -67,17 +67,17 @@ sealed class AqlServersTreeNode() : DefaultMutableTreeNode() {
 
         fun createNewConsole(project: Project): ConsoleTreeNode? {
 
-            val originalName = deduplicateName("Console", true)
+            val originalName = deduplicateName(server.name, true)
             val chosenName = AqlDialogs.rename(project, "Create New Console", "Name", originalName)
             if (chosenName == null || chosenName.isBlank()) return null
             val actualName = deduplicateName(chosenName, false)
 
-            val newFile = AqlPluginHomeDir.createConsoleFile(server, actualName)
+            val newFile = AqlPluginConfigurationService.createConsoleFile(server, actualName)
             return ConsoleTreeNode(server, newFile)
         }
 
 
-        private fun loadConsoles() = AqlPluginHomeDir.listConsoleFiles(server).map { ConsoleTreeNode(server, it) }
+        private fun loadConsoles() = AqlPluginConfigurationService.listConsoleFiles(server).map { ConsoleTreeNode(server, it) }
     }
 
     class ConsoleTreeNode(val server: AqlServer, var file: Path) : AqlServersTreeNode() {

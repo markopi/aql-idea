@@ -1,7 +1,7 @@
 package care.better.tools.aqlidea.plugin
 
-import care.better.tools.aqlidea.plugin.settings.AqlServersPersistentState
 import care.better.tools.aqlidea.plugin.settings.AqlServer
+import care.better.tools.aqlidea.plugin.settings.AqlServersConfigurationService
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
@@ -77,7 +77,7 @@ object AqlUtils {
 
 
     fun aqlServerForFile(file: VirtualFile): AqlServer? {
-        val aqlServers = AqlServersPersistentState.getService().readState()
+        val aqlServers = AqlServersConfigurationService.INSTANCE.load()
         val aqlServerId = file.getUserData(KEY_AQL_SERVER_ID)
         return if (aqlServerId!=null) {
             aqlServers.servers.firstOrNull { it.id==aqlServerId }
@@ -87,8 +87,8 @@ object AqlUtils {
     }
 
     fun parentPathContainsDir(parent: Path, dir: Path): Boolean {
-        val absoluteParent = dir.toAbsolutePath()
-        var path: Path? = parent.toAbsolutePath()
+        val absoluteParent = parent.toAbsolutePath()
+        var path: Path? = dir.toAbsolutePath()
         while (path != null) {
             if (path == absoluteParent) return true
             path = path.parent
