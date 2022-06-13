@@ -15,10 +15,11 @@ import kotlin.streams.toList
 
 
 object AqlPluginConfigurationService {
-    val objectMapper= ObjectMapper().apply {
+    val objectMapper = ObjectMapper().apply {
         registerModule(KotlinModule())
         setSerializationInclusion(JsonInclude.Include.NON_NULL)
     }
+
     fun homeDir(): Path {
         val userHomeDir = Paths.get(System.getProperty("user.home"))
         val pluginConfDir = userHomeDir.resolve(".aql-idea")
@@ -76,21 +77,22 @@ object AqlPluginConfigurationService {
             return AqlServerConsoleHistory(ArrayDeque(20))
         }
         val history = try {
-             objectMapper.readValue(historyPath.toFile(), AqlServerConsoleHistory::class.java)
+            objectMapper.readValue(historyPath.toFile(), AqlServerConsoleHistory::class.java)
         } catch (e: Exception) {
             Files.delete(historyPath)
             AqlServerConsoleHistory(ArrayDeque(20))
         }
         return history
     }
+
     fun writeAqlServerConsoleHistory(consolePath: Path, history: AqlServerConsoleHistory) {
         val historyPath = Paths.get(FilenameUtils.removeExtension(consolePath.toString()) + ".history")
         objectMapper.writeValue(historyPath.toFile(), history)
     }
 
     fun createConsoleFile(server: AqlServer, name: String): Path {
-        var name=name
-        if (!name.endsWith(".aql")) name=name+".aql"
+        var name = name
+        if (!name.endsWith(".aql")) name = name + ".aql"
         val serverConsolesDir = serverConsolesDir(server)
         if (!Files.exists(serverConsolesDir)) Files.createDirectories(serverConsolesDir)
 

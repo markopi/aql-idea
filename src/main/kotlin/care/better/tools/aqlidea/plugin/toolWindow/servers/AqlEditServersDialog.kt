@@ -20,6 +20,7 @@ import java.awt.Component
 import java.awt.Dimension
 import java.awt.event.ActionEvent
 import java.util.*
+import java.util.concurrent.atomic.AtomicLong
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -43,6 +44,7 @@ class AqlEditDataSourcesDialogPanel(val model: AqlServersConfiguration) : JPanel
 
 
     private var currentServer: AqlServer? = null
+    private var lastServerId: AtomicLong = AtomicLong(readLastServerId())
 
 
     private lateinit var actionToolbar: ActionToolbar
@@ -139,10 +141,18 @@ class AqlEditDataSourcesDialogPanel(val model: AqlServersConfiguration) : JPanel
         return testPanel
     }
 
+    private fun readLastServerId(): Long {
+        val maxId = model.servers.maxOfOrNull { it.id.toLongOrNull(Character.MAX_RADIX) ?: 0 } ?: -1
+        return maxId
+    }
+    private fun newServerId(): String {
+        val nextId = lastServerId.incrementAndGet()
+        return nextId.toString(Character.MAX_RADIX).toLowerCase()
+    }
     private fun createActionToolbar(): ActionToolbar {
         val addServer = object : AnAction("Add", "Add server", AllIcons.General.Add) {
             override fun actionPerformed(e: AnActionEvent) {
-                val newServer = AqlServer(id = UUID.randomUUID().toString(), name = "New Server", "", "", "", false)
+                val newServer = AqlServer(id = newServerId(), name = "New Server", "", "", "", false)
                 model.servers.add(newServer)
                 dataSourcesListModel.addElement(newServer)
                 dataSourcesList.selectedIndex = dataSourcesListModel.size() - 1
