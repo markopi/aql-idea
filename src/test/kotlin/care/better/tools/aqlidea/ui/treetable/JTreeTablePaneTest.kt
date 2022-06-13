@@ -31,7 +31,7 @@ object JTreeTablePaneTest {
     fun main(args: Array<String>) {
         val frame = JFrame("Groupable Header Example").apply {
 //            val resp = loadResponse("simple-scalar")
-            val resp = loadResponse("ehr_id")
+            val resp = loadResponse("ehr_id_reordered")
             val ttd = AqlQueryResultHeaderBuilder().build(resp)
 
             val table = JTreeTable.of(ttd)

@@ -1,0 +1,27 @@
+{
+  "meta": {"href": "http://thinkehr2.better.care:8082/rest/v1/query/"},
+  "aql": "select e from ehr e contains composition c limit 1",
+  "executedAql": "select e from ehr e contains composition c limit 1", "resultSet": [
+  {
+    "#0": {
+      "@class": "EHR",
+      "ehr_status": {
+        "@class": "EHR_STATUS",
+        "queryable": true
+      },
+      "time_created": {"@class": "DV_DATE_TIME", "value": "2014-04-18T13:14:53.604+02:00"}
+    }
+  },
+  {
+    "#0": {
+      "@class": "EHR",
+      "time_created": {"@class": "DV_DATE_TIME", "value": "2014-04-18T13:14:53.604+02:00"},
+      "ehr_status": {
+        "@class": "EHR_STATUS",
+        "uid": {"@class": "HIER_OBJECT_ID", "value": "1e92dec9-a1c2-4d5f-b21a-125ec41e2277::ihe.marand.si::1"},
+        "queryable": true
+      }
+    }
+  }
+]
+}

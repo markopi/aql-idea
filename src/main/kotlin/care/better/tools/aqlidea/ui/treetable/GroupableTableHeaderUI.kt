@@ -78,7 +78,7 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
                 header.background = table.tableHeader.background
 //                header.border = UIManager.getBorder("TableHeader.cellBorder")
                 // Metal borders don't work on some idea versions on dark themes
-//                header.border = MetalBorders.TableHeaderBorder
+//                header.border = MetalBorders.TableHeaderBorder()
                 header.border = SideBorder(Color.GRAY, SideBorder.TOP + SideBorder.LEFT)
                 return header
             }
