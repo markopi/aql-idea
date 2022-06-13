@@ -12,7 +12,6 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.project.Project
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.ProcessingContext
@@ -45,7 +44,7 @@ class AqlCompletionContributor : CompletionContributor() {
             val aql = lexedAql.lexed.aql
             val aqlStartOffset = lexedAql.offset
             val offset = parameters.offset - aqlStartOffset
-            val autocompletions = getAutocompletions(aqlServer, aql, offset, parameters.editor.project)
+            val autocompletions = getAutocompletions(aqlServer, aql, offset)
             if (autocompletions.isEmpty()) return
             val originalText = parameters.editor.document.text
 
@@ -80,7 +79,7 @@ class AqlCompletionContributor : CompletionContributor() {
 
         }
 
-        fun getAutocompletions(aqlServer: AqlServer?, aql: String, cursorOffset: Int, project: Project?): List<AqlAutocompletion> {
+        fun getAutocompletions(aqlServer: AqlServer?, aql: String, cursorOffset: Int): List<AqlAutocompletion> {
             val lexedAql = LexedAql.of(aql, whitespaceAware = false)
             val result = mutableListOf<AqlAutocompletion>()
             val thinkEhr = ApplicationManager.getApplication().getService(ThinkEhrClientService::class.java)

@@ -26,6 +26,21 @@ class JTreeTable private constructor(model: DefaultTableModel) : JTable(model) {
             return target.values.toList()
         }
 
+//        private fun leafHeaders(target: MutableList<TreeTableNode>, header: TreeTableNode) {
+//            if (header.dataIndex>=0) target += header
+//            for (child in header.children) {
+//                leafHeaders(target, child)
+//            }
+//        }
+//
+//        private fun leafHeaders(data: TreeTableData): List<TreeTableNode> {
+//            val target = mutableListOf<TreeTableNode>()
+//            for (header in data.headers) {
+//                leafHeaders(target, header)
+//            }
+//            return target
+//        }
+
 
         private fun getColumn(header: TreeTableNode, columnModel: TableColumnModel): Any {
             if (header.children.isEmpty() && header.dataIndex>=0) {

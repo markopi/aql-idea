@@ -20,7 +20,7 @@ data class LexerToken(val type: IElementType, val text: String, val start: Int, 
 
     fun updateClause(currentClause: AqlClause?): AqlClause? {
         if (type !== AQL_KEYWORD) return currentClause
-        return when (val keyword = text.toLowerCase()) {
+        return when (text.toLowerCase()) {
             "select" -> AqlClause.select
             "from" -> AqlClause.from
             "where" -> AqlClause.where

@@ -3,11 +3,10 @@
 # aql-idea Changelog
 
 ## 0.0.7
-- Moved all configuration to HOME/.aql-idea
+- Moved all configuration to HOME/.aql-idea (you will need to configure the servers again)
 - Support for multiple consoles per server
 - Aql query history per console
 - show results in tree table
-
 
 ## 0.0.6
 - Compatibility with latest Idea version: 221.*

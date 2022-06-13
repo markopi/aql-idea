@@ -36,6 +36,7 @@ class GroupableTableHeader(model: TableColumnModel?) : JTableHeader(model) {
         for (columnGroup in columnGroups) {
             val v_ret = columnGroup.getColumnGroups(col, mutableListOf())
             if (v_ret != null) {
+                @Suppress("UNCHECKED_CAST")
                 return v_ret as List<ColumnGroup>
             }
 
@@ -44,7 +45,7 @@ class GroupableTableHeader(model: TableColumnModel?) : JTableHeader(model) {
     }
 
     fun setColumnMargin() {
-        val columnMargin = getColumnModel().columnMargin
+//        val columnMargin = getColumnModel().columnMargin
         for (columnGroup in columnGroups) {
             columnGroup.setColumnMargin(0)
 //            columnGroup.setColumnMargin(columnMargin)

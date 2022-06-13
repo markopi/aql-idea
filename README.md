@@ -34,7 +34,7 @@ AQL support for Idea.
 - Click Ok to save the server configuration
 
 Servers will now be listed in the Servers tab inside the AQL tool window. To open a console for a particular server, 
-double-click on the server name. 
+double-click on the server name.
 
 #### Multiple consoles per server
 

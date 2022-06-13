@@ -89,12 +89,12 @@ class CustomAqlLexer : AbstractCustomLexer(buildTokenParsers()) {
         }
 
         override fun getTokenEnd(position: Int): Int {
-            var position = position
-            while (position < myEndOffset) {
-                if (myBuffer[position] == '\n') break
-                position++
+            var p = position
+            while (p < myEndOffset) {
+                if (myBuffer[p] == '\n') break
+                p++
             }
-            return position
+            return p
         }
     }
 

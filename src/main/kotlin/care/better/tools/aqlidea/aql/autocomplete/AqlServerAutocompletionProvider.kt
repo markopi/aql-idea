@@ -57,7 +57,7 @@ class AqlServerAutocompletionProvider(private val client: ThinkEhrClient) {
         varPath: AqlInfo.VarPath,
         server: ThinkEhrTarget
     ): List<AqlAutocompletion> {
-        val (fromVar, pathPrefix) = getReferencedVar(aqlInfo, varPath.varName)
+        val (fromVar, _) = getReferencedVar(aqlInfo, varPath.varName)
         // did not find the referred root variable, do not provide autocompletions
         if (fromVar == null) return listOf()
 

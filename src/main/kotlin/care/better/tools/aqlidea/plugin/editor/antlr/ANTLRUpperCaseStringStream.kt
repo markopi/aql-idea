@@ -3,6 +3,7 @@ package care.better.tools.aqlidea.plugin.editor.antlr
 import org.antlr.runtime.ANTLRStringStream
 
 class ANTLRUpperCaseStringStream(aqlString: String) : ANTLRStringStream(aqlString) {
+    @Suppress("NAME_SHADOWING")
     override fun LA(i: Int): Int {
         var i = i
         if (i == 0) {

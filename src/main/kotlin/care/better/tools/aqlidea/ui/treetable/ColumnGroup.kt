@@ -5,6 +5,7 @@ import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
 import java.util.*
+import javax.swing.JLabel
 import javax.swing.JTable
 import javax.swing.UIManager
 import javax.swing.border.BevelBorder
@@ -36,6 +37,7 @@ class ColumnGroup(renderer: TableCellRenderer?, text: String?) {
                     table: JTable, value: Any?,
                     isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int
                 ): Component {
+
                     val header = table.tableHeader
                     if (header != null) {
                         foreground = header.foreground
@@ -43,11 +45,12 @@ class ColumnGroup(renderer: TableCellRenderer?, text: String?) {
                         font = header.font
                     }
                     horizontalAlignment = CENTER
+                    verticalAlignment = BOTTOM
                     setText(value?.toString() ?: "")
 //                    border = UIManager.getBorder("TableHeader.cellBorder")
-//                    border = LineBorder.createBlackLineBorder()
-//                    border = SideBorder(Color.BLACK, SideBorder.TOP + SideBorder.LEFT)
-                    this.border = MetalBorders.TableHeaderBorder()
+                    // Metal borders don't work on some idea versions on dark themes
+//                    this.border = MetalBorders.TableHeaderBorder()
+                    border = SideBorder(Color.GRAY, SideBorder.TOP + SideBorder.LEFT)
                     return this
                 }
             }
@@ -106,6 +109,10 @@ class ColumnGroup(renderer: TableCellRenderer?, text: String?) {
         }
 
         return Dimension(width, height)
+    }
+
+    override fun toString(): String {
+        return "Group(text=$text))"
     }
 
     fun setColumnMargin(margin: Int) {

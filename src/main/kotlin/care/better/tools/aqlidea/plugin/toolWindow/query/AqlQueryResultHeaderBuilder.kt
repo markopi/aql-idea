@@ -38,6 +38,7 @@ class AqlQueryResultHeaderBuilder {
             }
         }
 
+        @Suppress("UNCHECKED_CAST")
         private fun add(
             parent: BuildTreeTableNode,
             name: String,
@@ -64,7 +65,7 @@ class AqlQueryResultHeaderBuilder {
                     val d = data as List<Any?>
 //                    val node = parent.children.getOrPut(name) { BuildTreeTableNode(name, -1) }
                     var curRowIndex = rowIndex
-                    d.forEachIndexed { index, value ->
+                    d.forEachIndexed { _, value ->
                         curRowIndex = add(parent, name, value, curRowIndex)
                     }
                     return curRowIndex

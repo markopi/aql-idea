@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
-import com.intellij.openapi.diagnostic.Logger
 import java.net.URI
 import java.net.URLEncoder
 import java.net.http.HttpClient
@@ -95,7 +94,6 @@ class ThinkEhrClientImpl : ThinkEhrClient {
         disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     }
 
-    private val log: Logger = Logger.getInstance(ThinkEhrClient::class.java)
     private val timeout = Duration.ofSeconds(60)
 
     override fun query(target: ThinkEhrTarget, aql: String): ThinkEhrClient.QueryResponse {
@@ -122,15 +120,10 @@ class ThinkEhrClientImpl : ThinkEhrClient {
 
     override fun listArchetypeInfos(target: ThinkEhrTarget): List<ThinkEhrArchetypeInfo> {
         val url = target.url + "/rest/v1/archetype/flat"
-        val request = HttpRequest.newBuilder(URI.create(url))
-            .GET()
-            .header("Authorization", buildAuthorizationHeader(target))
-            .header("Content-Type", "application/json")
-            .timeout(timeout)
-            .build()
+        val request = buildHttpGetRequest(url, target)
 
         val req = ThinkEhrClient.Request(url, null)
-        val (resp, response) = sendRequest(req, request)
+        val (resp, _) = sendRequest(req, request)
         ensureSuccess(req, resp)
 
         return parseListResponse(req, resp, ThinkEhrArchetypeInfo::class.java)
@@ -139,18 +132,20 @@ class ThinkEhrClientImpl : ThinkEhrClient {
 
     override fun getArchetypeDetails(target: ThinkEhrTarget, archetypeId: String): ThinkEhrArchetypeDetails {
         val url = target.url + "/rest/v1/archetype/flat/${encode(archetypeId)}"
-        val request = HttpRequest.newBuilder(URI.create(url))
+        val request = buildHttpGetRequest(url, target)
+
+        val req = ThinkEhrClient.Request(url, null)
+        val (resp, _) = sendRequest(req, request)
+        ensureSuccess(req, resp)
+        return parseResponse(req, resp, ThinkEhrArchetypeDetails::class.java)
+    }
+
+    private fun buildHttpGetRequest(url: String, target: ThinkEhrTarget) = HttpRequest.newBuilder(URI.create(url))
             .GET()
             .header("Authorization", buildAuthorizationHeader(target))
             .header("Content-Type", "application/json")
             .timeout(timeout)
             .build()
-
-        val req = ThinkEhrClient.Request(url, null)
-        val (resp, response) = sendRequest(req, request)
-        ensureSuccess(req, resp)
-        return parseResponse(req, resp, ThinkEhrArchetypeDetails::class.java)
-    }
 
 
     private fun buildAuthorizationHeader(target: ThinkEhrTarget): String {
@@ -205,7 +200,7 @@ class ThinkEhrClientImpl : ThinkEhrClient {
         resp: ThinkEhrClient.Response,
         itemType: Class<T>
     ): List<T> {
-        val type = objectMapper.typeFactory.constructCollectionType(List::class.java, ThinkEhrArchetypeInfo::class.java)
+        val type = objectMapper.typeFactory.constructCollectionType(List::class.java, itemType)
         return try {
             objectMapper.readValue(resp.body, type) as List<T>
         } catch (e: Exception) {

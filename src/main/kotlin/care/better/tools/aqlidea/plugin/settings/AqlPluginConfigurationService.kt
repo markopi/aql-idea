@@ -91,8 +91,8 @@ object AqlPluginConfigurationService {
     }
 
     fun createConsoleFile(server: AqlServer, name: String): Path {
-        var name = name
-        if (!name.endsWith(".aql")) name = name + ".aql"
+        @Suppress("NAME_SHADOWING") var name = name
+        if (!name.endsWith(".aql")) name += ".aql"
         val serverConsolesDir = serverConsolesDir(server)
         if (!Files.exists(serverConsolesDir)) Files.createDirectories(serverConsolesDir)
 

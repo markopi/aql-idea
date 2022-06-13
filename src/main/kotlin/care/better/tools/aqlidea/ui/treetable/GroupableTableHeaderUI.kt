@@ -7,7 +7,6 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JTable
 import javax.swing.UIManager
-import javax.swing.border.BevelBorder
 import javax.swing.border.LineBorder
 import javax.swing.plaf.basic.BasicTableHeaderUI
 import javax.swing.plaf.metal.MetalBorders
@@ -31,28 +30,28 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
         val size = header.size
         val cellRect = Rectangle(0, 0, size.width, size.height)
         val h = Hashtable<Any?, Any?>()
-        val columnMargin = header.columnModel.columnMargin
+//        val columnMargin = header.columnModel.columnMargin
         val enumeration: Enumeration<*> = header.columnModel.columns
         while (enumeration.hasMoreElements()) {
             cellRect.height = size.height
             cellRect.y = 0
             val aColumn = enumeration.nextElement() as TableColumn
             val cGroups = (header as GroupableTableHeader).getColumnGroups(aColumn)
-                var groupHeight = 0
-                for (cGroup in cGroups) {
-                    var groupRect = h[cGroup] as Rectangle?
-                    if (groupRect == null) {
-                        groupRect = Rectangle(cellRect)
-                        val d = cGroup.getSize(header.table)
-                        groupRect.width = d.width
-                        groupRect.height = d.height
-                        h[cGroup] = groupRect
-                    }
-                    paintCell(g, groupRect, cGroup)
-                    groupHeight += groupRect.height
-                    cellRect.height = size.height - groupHeight
-                    cellRect.y = groupHeight
+            var groupHeight = 0
+            for (cGroup in cGroups) {
+                var groupRect = h[cGroup] as Rectangle?
+                if (groupRect == null) {
+                    groupRect = Rectangle(cellRect)
+                    val d = cGroup.getSize(header.table)
+                    groupRect.width = d.width
+                    groupRect.height = d.height
+                    h[cGroup] = groupRect
                 }
+                paintCell(g, groupRect, cGroup)
+                groupHeight += groupRect.height
+                cellRect.height = size.height - groupHeight
+                cellRect.y = groupHeight
+            }
             cellRect.width = aColumn.width // + columnMargin
             if (cellRect.intersects(clipBounds)) {
                 paintCell(g, cellRect, column)
@@ -67,12 +66,7 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
         //revised by Java2s.com
         val renderer = object : DefaultTableCellRenderer() {
             override fun getTableCellRendererComponent(
-                table: JTable,
-                value: Any,
-                isSelected: Boolean,
-                hasFocus: Boolean,
-                row: Int,
-                column: Int
+                table: JTable, value: Any, isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int
             ): Component {
                 val header = JLabel()
                 header.font = table.tableHeader.font
@@ -83,8 +77,9 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
 //                header.foreground = Color.RED
                 header.background = table.tableHeader.background
 //                header.border = UIManager.getBorder("TableHeader.cellBorder")
-                header.border = MetalBorders.TableHeaderBorder()
-
+                // Metal borders don't work on some idea versions on dark themes
+//                header.border = MetalBorders.TableHeaderBorder
+                header.border = SideBorder(Color.GRAY, SideBorder.TOP + SideBorder.LEFT)
                 return header
             }
         }
@@ -94,8 +89,7 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
         c.background = UIManager.getColor("control")
         rendererPane.add(c)
         rendererPane.paintComponent(
-            g, c, header, cellRect.x, cellRect.y,
-            cellRect.width, cellRect.height, true
+            g, c, header, cellRect.x, cellRect.y, cellRect.width, cellRect.height, true
         )
     }
 
@@ -110,8 +104,7 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
         )
         rendererPane.add(component)
         rendererPane.paintComponent(
-            g, component, header, cellRect.x, cellRect.y,
-            cellRect.width, cellRect.height, true
+            g, component, header, cellRect.x, cellRect.y, cellRect.width, cellRect.height, true
         )
     }
 
@@ -119,12 +112,13 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
     private val headerHeight: Int
         get() {
             val columnModel = header.columnModel
-            var height =0
+            var height = 0
             for (column in 0 until columnModel.columnCount) {
                 val aColumn = columnModel.getColumn(column)
                 val renderer = aColumn.headerRenderer ?: header.defaultRenderer
                 val component = renderer.getTableCellRendererComponent(
-                    header.table, aColumn.headerValue, false, false, -1, column)
+                    header.table, aColumn.headerValue, false, false, -1, column
+                )
 
                 val cGroups = (header as GroupableTableHeader).getColumnGroups(aColumn)
                 val groupsHeight = cGroups.sumOf { it.getSize(header.table).height }
@@ -133,6 +127,7 @@ class GroupableTableHeaderUI : BasicTableHeaderUI() {
             return height
         }
 
+    @Suppress("NAME_SHADOWING")
     private fun createHeaderSize(width: Long): Dimension {
         var width = width
         val columnModel = header.columnModel
