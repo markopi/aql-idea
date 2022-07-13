@@ -11,8 +11,7 @@ import org.apache.commons.lang3.SystemUtils
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.streams.toList
-
+import java.util.stream.Collectors
 
 object AqlPluginConfigurationService {
     val objectMapper = ObjectMapper().apply {
@@ -38,7 +37,7 @@ object AqlPluginConfigurationService {
         val existingServerIds = configuration.servers.map { it.id }.toSet()
         val serversPath = homeDir().resolve("servers")
         if (Files.exists(serversPath))
-            for (path in Files.list(serversPath).use { it.toList() }) {
+            for (path in Files.list(serversPath).use { it.collect(Collectors.toList()) }) {
                 val name = path.fileName.toString()
                 if (name !in existingServerIds) {
                     val file = VfsUtil.findFile(path, false)!!
@@ -62,7 +61,7 @@ object AqlPluginConfigurationService {
     fun listConsoleFiles(server: AqlServer): List<Path> {
         val consoleDir = serverConsolesDir(server)
         if (!Files.isDirectory(consoleDir)) return listOf()
-        return Files.list(consoleDir).use { it.toList() }
+        return Files.list(consoleDir).use { it.collect(Collectors.toList()) }
     }
 
     fun deleteConsoleFile(server: AqlServer, path: Path) {

@@ -5,12 +5,14 @@ import care.better.tools.aqlidea.plugin.AqlUtils
 import care.better.tools.aqlidea.plugin.service.ThinkEhrClientService
 import care.better.tools.aqlidea.plugin.settings.AqlServer
 import care.better.tools.aqlidea.plugin.toolWindow.AqlToolWindowFactory
+import com.google.common.base.Stopwatch
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
+import java.util.concurrent.TimeUnit
 
 object AqlQueryRunner {
-    private val log: Logger = Logger.getInstance(AqlRunLineMarkerProvider.RunAqlAction::class.java)
+    private val log = Logger.getInstance(AqlQueryRunner::class.java)
 
     fun run(
         project: Project,
@@ -23,8 +25,13 @@ object AqlQueryRunner {
 
             AqlToolWindowFactory.showQueryStart(project)
             try {
+//                val t1 = System.currentTimeMillis()
                 val r = thinkehr.client.query(target, aql)
+//                val t2 = System.currentTimeMillis()
+//                log.info("Query retrieved in ${t2 - t1}ms")
                 AqlToolWindowFactory.showQueryResult(project, r)
+                val t3 = System.currentTimeMillis()
+//                log.info("Query displayed in ${t3 - t2}ms")
             } catch (e: Exception) {
                 AqlToolWindowFactory.showQueryError(project, e)
             }

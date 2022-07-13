@@ -1,5 +1,6 @@
 package care.better.tools.aqlidea.ui.treetable
 
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.ui.SideBorder
 import java.awt.Color
 import java.awt.Component
@@ -23,10 +24,13 @@ import kotlin.math.max
  * @author Nobuo Tamemasa
  */
 class ColumnGroup(renderer: TableCellRenderer?, text: String?) {
+
     private var renderer: TableCellRenderer
     private val columns: MutableList<Any> = mutableListOf()
     private var text: String?
     private var margin = 0
+    private var cachedTableBounds: Dimension? = null
+    private var cachedSize: Dimension? = null
 
     constructor(text: String?) : this(null, text) {}
 
@@ -66,6 +70,7 @@ class ColumnGroup(renderer: TableCellRenderer?, text: String?) {
     fun add(column: TableColumn) = columns.add(column)
     fun add(column: ColumnGroup) = columns.add(column)
 
+
     /**
      * @param c    TableColumn
      * @param g    ColumnGroups
@@ -92,7 +97,12 @@ class ColumnGroup(renderer: TableCellRenderer?, text: String?) {
     val headerValue: Any?
         get() = text
 
-    fun getSize(table: JTable?): Dimension {
+    fun getSize(table: JTable): Dimension {
+        // size must be cached, otherwise horizontal scrolling will be very slow
+        // we only use cache if the table size hasn't changed, so that the values will still be correct on resizes
+        if (cachedSize != null && table.size == cachedTableBounds) return cachedSize!!
+        val started = System.currentTimeMillis()
+
         val comp = renderer.getTableCellRendererComponent(
             table, headerValue, false, false, -1, -1
         )
@@ -107,8 +117,11 @@ class ColumnGroup(renderer: TableCellRenderer?, text: String?) {
                 width += size.width
             }
         }
-
-        return Dimension(width, height)
+        val size = Dimension(width, height)
+        cachedTableBounds = table.size
+        cachedSize = size
+        
+        return size
     }
 
     override fun toString(): String {
@@ -122,5 +135,9 @@ class ColumnGroup(renderer: TableCellRenderer?, text: String?) {
                 obj.setColumnMargin(margin)
             }
         }
+    }
+
+    companion object {
+        val log = Logger.getInstance(ColumnGroup::class.java)
     }
 }

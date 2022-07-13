@@ -2,6 +2,11 @@
 
 # aql-idea Changelog
 
+## 0.0.8
+- Size columns in query result table according to contained data
+- Fix NoSuchMethodError when adding a new server
+- Format query request/response text
+
 ## 0.0.7
 - Moved all configuration to HOME/.aql-idea (you will need to configure the servers again)
 - Support for multiple consoles per server

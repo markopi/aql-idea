@@ -31,10 +31,16 @@ object JTreeTablePaneTest {
     fun main(args: Array<String>) {
         val frame = JFrame("Groupable Header Example").apply {
 //            val resp = loadResponse("simple-scalar")
-            val resp = loadResponse("ehr_id_reordered")
+//            val resp = loadResponse("ehr_id_reordered")
+            val resp = loadResponse("big")
             val ttd = AqlQueryResultHeaderBuilder().build(resp)
 
             val table = JTreeTable.of(ttd)
+//            table.autoResizeMode = JTable.AUTO_RESIZE_OFF
+//            for (columnIndex in 0 until table.columnModel.columnCount) {
+//                table.columnModel.getColumn(columnIndex).preferredWidth = 100 + columnIndex * 50
+////                table.columnModel.getColumn(columnIndex).minWidth = 50 + columnIndex * 20
+//            }
 
             val scroll = JScrollPane(table)
             contentPane.add(scroll)
