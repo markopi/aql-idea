@@ -90,7 +90,7 @@ class CachingThinkEhrClient(private val delegate: ThinkEhrClient) : ThinkEhrClie
 class ThinkEhrClientImpl : ThinkEhrClient {
     private val httpClient = HttpClient.newHttpClient()
     private val objectMapper: ObjectMapper = ObjectMapper().apply {
-        registerModule(KotlinModule())
+        registerModule(KotlinModule.Builder().build())
         disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     }
 

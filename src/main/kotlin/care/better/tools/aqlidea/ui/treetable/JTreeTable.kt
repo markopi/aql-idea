@@ -119,7 +119,7 @@ class JTreeTable private constructor(model: DefaultTableModel) : JTable(model) {
             table.autoResizeMode = JTable.AUTO_RESIZE_OFF
             for (columnIndex in 0 until table.columnModel.columnCount) {
                 val column = table.columnModel.getColumn(columnIndex)
-                val header = leafHeaders[columnIndex]
+//                val header = leafHeaders[columnIndex]
 //                column.minWidth = table.tableHeader.textWidth(header.name) + padding
                 val dataWidths = columnWidths(dataFontMetrics, data, columnIndex, 100)
 //                column.maxWidth = dataWidths.max.coerceAtLeast(column.minWidth)

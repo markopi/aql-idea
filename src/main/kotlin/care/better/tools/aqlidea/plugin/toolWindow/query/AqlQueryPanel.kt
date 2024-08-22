@@ -4,10 +4,8 @@ import care.better.tools.aqlidea.ui.treetable.JTreeTable.Companion.of
 import care.better.tools.aqlidea.ui.treetable.TreeTableData
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.intellij.openapi.fileTypes.FileTypeManager
-import com.intellij.openapi.fileTypes.FileTypes
 import com.intellij.openapi.project.Project
 import com.intellij.ui.EditorTextField
-import javax.swing.JEditorPane
 import javax.swing.JScrollPane
 import javax.swing.JTabbedPane
 import kotlin.reflect.KProperty
@@ -46,9 +44,9 @@ class AqlQueryPanel(private val project: Project) : JTabbedPane() {
     var rawResponse: String by rawResponseEditor
 
     fun setResultTableData(treeTableData: TreeTableData?) {
-        val treeTableData = treeTableData ?: TreeTableData(emptyList(), emptyList())
+        val data = treeTableData ?: TreeTableData(emptyList(), emptyList())
 
-        val table = of(treeTableData)
+        val table = of(data)
         queryResponseTab.setViewportView(table)
 
     }

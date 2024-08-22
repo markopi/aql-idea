@@ -25,13 +25,8 @@ object AqlQueryRunner {
 
             AqlToolWindowFactory.showQueryStart(project)
             try {
-//                val t1 = System.currentTimeMillis()
                 val r = thinkehr.client.query(target, aql)
-//                val t2 = System.currentTimeMillis()
-//                log.info("Query retrieved in ${t2 - t1}ms")
                 AqlToolWindowFactory.showQueryResult(project, r)
-                val t3 = System.currentTimeMillis()
-//                log.info("Query displayed in ${t3 - t2}ms")
             } catch (e: Exception) {
                 AqlToolWindowFactory.showQueryError(project, e)
             }

@@ -101,7 +101,6 @@ class ColumnGroup(renderer: TableCellRenderer?, text: String?) {
         // size must be cached, otherwise horizontal scrolling will be very slow
         // we only use cache if the table size hasn't changed, so that the values will still be correct on resizes
         if (cachedSize != null && table.size == cachedTableBounds) return cachedSize!!
-        val started = System.currentTimeMillis()
 
         val comp = renderer.getTableCellRendererComponent(
             table, headerValue, false, false, -1, -1

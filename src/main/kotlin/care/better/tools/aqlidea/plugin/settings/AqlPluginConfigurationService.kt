@@ -15,7 +15,7 @@ import java.util.stream.Collectors
 
 object AqlPluginConfigurationService {
     val objectMapper = ObjectMapper().apply {
-        registerModule(KotlinModule())
+        registerModule(KotlinModule.Builder().build())
         setSerializationInclusion(JsonInclude.Include.NON_NULL)
     }
 
